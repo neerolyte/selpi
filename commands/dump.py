@@ -1,7 +1,22 @@
-#!/usr/bin/env python3
-import serial, time, struct, hashlib, binascii, config
+def add_parser(subparsers):
+	parser = subparsers.add_parser('dump', help='dump memory to stdout')
+	parser.set_defaults(func=run)
 
-sp_pro_port = "/dev/ttyUSB0"
+def run(args):
+	login()
+
+	# Before 0xa001 we don't get anything back
+	start=0xa001
+	# How much to get at a time (also tied to console line length currently)
+	length=0x10
+	# When to stop
+	end=0xa2ff
+	for address in range(start, end, length):
+		hexaddy = binascii.hexlify(struct.pack(">H", address))
+		mem = binascii.hexlify(get(address, length))
+		print(b''.join([b'0x',hexaddy,b' ',mem]).decode('utf-8'))
+
+import serial, time, struct, hashlib, binascii, config
 
 # Initialise USB port
 SPPort = serial.Serial(config.get('port'), baudrate=config.get('baudrate'), timeout=0.5)
@@ -101,16 +116,3 @@ def get(address, length):
     r = getReadRequest(address, length)
     responseBuffer = doReadRequest(address, length)
     return responseBuffer[len(r):len(r)+2*(length)]
-
-login()
-
-# Before 0xa001 we don't get anything back
-start=0xa001
-# How much to get at a time (also tied to console line length currently)
-length=0x10
-# When to stop
-end=0xa2ff
-for address in range(start, end, length):
-    hexaddy = binascii.hexlify(struct.pack(">H", address))
-    mem = binascii.hexlify(get(address, length))
-    print(b''.join([b'0x',hexaddy,b' ',mem]).decode('utf-8'))
