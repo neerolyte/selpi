@@ -9,7 +9,7 @@
 
 # USB
 
-The USB plug found externally on a SP Pro Series 2 is a FTDI serial device that for whatever reason doesn't get recognised as one by current Linux kernels.
+The USB plug found externally on a SP Pro Series 2 is a FTDI serial device that for whatever reason doesn't get recognised as one by current Linux kernels (submitted [here](https://usb-ids.gowdy.us/read/UD/0403/8508) but I'm not sure if that's the right place).
 
 That means the appropriate FTDI module needs to be loaded.
 
