@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import serial, time, struct, hashlib, binascii
-
-import selpi.config as config
+import serial, time, struct, hashlib, binascii, config
 
 sp_pro_port = "/dev/ttyUSB0"
 

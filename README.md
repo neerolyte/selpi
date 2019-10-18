@@ -6,6 +6,7 @@ Additional docs:
 
  * [Connecting](docs/connecting.md)
  * [Protocol](docs/protocol.md)
+ * [Developing](docs/developing.md)
 
 # License / Warranty
 
