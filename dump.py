@@ -27,7 +27,7 @@ FCSLookUpTable = [0, 0x1189, 0x2312, 0x329b, 0x4624, 0x57ad, 0x6536, 0x74bf, 0x8
 
 def calculateCRCI(msg):
     n = 0
-    for i in xrange(0, len(msg)):
+    for i in range(0, len(msg)):
         n = (n >> 8) ^ FCSLookUpTable[(n ^ msg[i]) & 0xff]
     return n
 
@@ -36,13 +36,13 @@ def calculateCRC(msg):
     return struct.pack("<I", n)[:2]
 
 def getReadRequest(address, length):
-    m = bytearray(["Q", length])
+    m = bytearray([ord("Q"), length])
     m.extend(struct.pack("<I", address))
     m.extend(calculateCRC(m))
     return m
 
 def getWriteRequest(address, data):
-    m = bytearray(["W", len(data)-1])
+    m = bytearray([ord("W"), len(data)-1])
     m.extend(struct.pack("<I", address))
     m.extend(calculateCRC(m))
 
@@ -70,14 +70,14 @@ def login():
 
     # Convert md5 to little endian int32 array
     md5ia = []
-    for i in xrange(0, len(md5), 2):
+    for i in range(0, len(md5), 2):
         md5ia.extend(struct.unpack("<I", bytes(md5[i:i+2] + bytearray([0, 0]))))
 
     # Respond with hash/pwd MD5
     r = getWriteRequest(0x1f0000, md5ia)
     SPPort.write(r)
     responseBuffer = bytearray()
-    for i in xrange(1, 52):
+    for i in range(1, 52):
         responseBuffer.extend(SPPort.read())
         if len(responseBuffer) == 26:
             return True
@@ -90,7 +90,7 @@ def doReadRequest(address, length):
     SPPort.flushOutput()
     responseBuffer = bytearray()
     expectedResponseLength = 2 * (length + 1) + 10
-    for i in xrange(1, expectedResponseLength + 10): # Allow for a few timeouts @ 0.5s
+    for i in range(1, expectedResponseLength + 10): # Allow for a few timeouts @ 0.5s
         responseBuffer.extend(SPPort.read())
         if len(responseBuffer) == expectedResponseLength:
             break
@@ -112,4 +112,6 @@ length=0x10
 # When to stop
 end=0xa2ff
 for address in range(start, end, length):
-    print "0x"+binascii.hexlify(struct.pack(">H", address)), binascii.hexlify(get(address, length))
+    hexaddy = binascii.hexlify(struct.pack(">H", address))
+    mem = binascii.hexlify(get(address, length))
+    print(b''.join([b'0x',hexaddy,b' ',mem]).decode('utf-8'))
