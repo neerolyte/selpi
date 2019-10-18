@@ -1,11 +1,12 @@
+#!/usr/bin/env python3
 import serial, time, struct, hashlib, binascii
 
-sp_pro_baud_rate = 57600 # Options: 57600 115200 9600 2400 1200 4800 19200 38400
+import selpi.config as config
+
 sp_pro_port = "/dev/ttyUSB0"
-sp_pro_password = "Selectronic SP PRO"
 
 # Initialise USB port
-SPPort = serial.Serial(sp_pro_port, baudrate=sp_pro_baud_rate, timeout=0.5)
+SPPort = serial.Serial(config.get('port'), baudrate=config.get('baudrate'), timeout=0.5)
 SPPort.flushOutput()
 
 FCSLookUpTable = [0, 0x1189, 0x2312, 0x329b, 0x4624, 0x57ad, 0x6536, 0x74bf, 0x8c48, 0x9dc1, 0xaf5a, 0xbed3, 0xca6c, 0xdbe5, 0xe97e, 0xf8f7,
@@ -63,7 +64,7 @@ def login():
     h = doReadRequest(0x1f0000, 7)[8:24]
 
     # Compute MD5 hash to send back, including login password
-    h.extend(sp_pro_password.ljust(32).encode("ascii"))
+    h.extend(config.get('password').ljust(32).encode("ascii"))
 
     # Compute md5
     md5 = bytearray(hashlib.md5(h).digest())
