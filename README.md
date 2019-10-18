@@ -19,3 +19,9 @@ For those unfamiliar please note that this means no warranty OF ANY KIND is gran
 The Python script `pvo-sppro2.py` is designed to upload basic data from a SP Pro 2 to [pvoutput.org](https://pvoutput.org/).
 
 Once [connected](docs/connecting.md) to a SP Pro, modify the script to include your PVO credentials and the appropriate `ttyUSB` device. Run it with `python pvo-sppro2.py`.
+
+# Acknowledgements
+
+This repository is primarily maintained by [David Schoen](http://github.com/neerolyte).
+
+Foundational code and inspirational advice provided by [Justin Stafford](https://www.linkedin.com/in/justin-stafford-blueshift/).
