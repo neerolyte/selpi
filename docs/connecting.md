@@ -1,4 +1,4 @@
-# Connecting to the SP Pro Series 2
+# Connecting
 
 <!-- TOC -->
 

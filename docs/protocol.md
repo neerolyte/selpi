@@ -1,4 +1,4 @@
-# Selectronic SP Pro 2 Serial Protocol
+# Protocol
 
 The querying side of the protocol appears to be based around querying for a number of bytes of memory.
 
