@@ -6,9 +6,10 @@ The communication protocol with the SP Pro appears to consist of requests for bl
 
 - [Protocol](#protocol)
 - [Memory space](#memory-space)
-- [Querying memory](#querying-memory)
-- [Example Messages](#example-messages)
-	- [Hello](#hello)
+- [Messages](#messages)
+	- [Query](#query)
+	- [Example Messages](#example-messages)
+		- [Hello](#hello)
 - [Authentication](#authentication)
 
 <!-- /TOC -->
@@ -19,37 +20,45 @@ Memory is addressed as 2 byte words.
 
 Memory of interest appears to be within the 0xa000 - 0xafff range.
 
-# Querying memory
+# Messages
+
+## Query
 
 A query consists of:
 
-    QLAARRCC
+    TLAARRCC
 
 Where:
 
- * Q is a literal Q (0x51 in hex) - assumed to be for "query"
+ * T is the message type - Q for Query or W for Write
  * L is a byte indicating the number (length) of 2 byte words to return.
  * AA is a little endian word address (shifting the address by 1 shifts by 2 bytes).
- * RR appears to always be null (0x0000) and is assumed to be reserved.
+ * ?? appears to always be null (0x0000).
  * CC is a Cyclic Redundancy Check.
 
 A response consists of:
 
- * the exact bytes from the query (including CRC)
- * the requested memory
- * two unexplained bytes
- * CRC of the query+memory
+ * TLAA??CC the exact bytes from the query (including CRC).
+ * M the requested memory.
+ * ?? two unexplained bytes, not always null.
+ * CC CRC of the query + memory.
 
 It's possible to request between 0-255 bytes of memory, 
 
-# Example Messages
+## Example Messages
 
-## Hello
+### Hello
 
 Prior to authentication SP LINK sends a request for 0 words from `0xa000` and the SP Pro will respond with the appropriate CRC calculation.
 
- * `Query:    0x510000a000009d4b`
- * `Response: 0x510000a000009d4b0100d819`
+E.g:
+
+```
+Query:    0x510000a000009d4b
+            TTLLAAAA????CCCC
+Response: 0x510000a000009d4b0100d819
+            TTLLAAAA????CCCC????CCCC
+```
 
 # Authentication
 
