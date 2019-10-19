@@ -20,17 +20,17 @@ FCSLookUpTable = [0, 0x1189, 0x2312, 0x329b, 0x4624, 0x57ad, 0x6536, 0x74bf, 0x8
 
 
 class CRC:
-    def __init__(self, msg):
+    def __init__(self, msg: bytes):
         self._msg = msg
 
-    def as_int(self):
+    def as_int(self) -> int:
         n = 0
         for i in range(0, len(self._msg)):
             n = (n >> 8) ^ FCSLookUpTable[(n ^ self._msg[i]) & 0xff]
         return n
 
-    def as_hex(self):
+    def as_hex(self) -> bytes:
         return hexlify(self.as_bytes())
 
-    def as_bytes(self):
+    def as_bytes(self) -> bytes:
         return struct.pack("<H", self.as_int())

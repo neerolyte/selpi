@@ -2,6 +2,7 @@
 
 - [Switcher?](#switcher)
 - [Stats](#stats)
+- [Reimplement PVO](#reimplement-pvo)
 
 <!-- /TOC -->
 
@@ -12,3 +13,5 @@ Try writing something that talks to the SP Pro directly over ttyUSB and then lis
 # Stats
 
 Write basic utiltiy to dump all known stats to stdout and exit.
+
+# Reimplement PVO

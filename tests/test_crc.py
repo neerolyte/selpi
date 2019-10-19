@@ -1,5 +1,4 @@
 import unittest, struct
-from unittest.mock import MagicMock
 from crc import CRC
 
 class CRCTest(unittest.TestCase):
