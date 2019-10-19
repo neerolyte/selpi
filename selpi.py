@@ -6,6 +6,8 @@ subparsers = parser.add_subparsers(help='command to run', metavar='{command}')
 
 import commands.dump
 commands.dump.add_parser(subparsers)
+import commands.stat
+commands.stat.add_parser(subparsers)
 
 args = parser.parse_args()
 

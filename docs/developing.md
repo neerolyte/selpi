@@ -4,10 +4,10 @@
 Running tests:
 
 ```
-$ python3 -m unittest tests/*.py
-...
+$ pipenv run tests
+..
 ----------------------------------------------------------------------
-Ran 3 tests in 0.000s
+Ran 2 tests in 0.000s
 
 OK
 ```
