@@ -14,7 +14,7 @@ class Response:
     def expected_length(self) -> int:
         return sum([
             len(self.__request.get_message()),     # request message
-            (self.__request.get_length() + 1) * 2, # memory requested
+            (self.__request.get_word_length()) * 2, # memory requested
             2,                                 # crc
         ])
 
@@ -58,7 +58,7 @@ class Response:
     def memory(self) -> bytes:
         self.validate()
         query_length = len(self.__request.get_message())
-        memory_length = (self.__request.get_length() + 1) * 2
+        memory_length = (self.__request.get_word_length()) * 2
         start = query_length
         end = start + memory_length
         return self.__message[start:end]
