@@ -1,13 +1,22 @@
 #!/usr/bin/env python
-import argparse, pkgutil
+import argparse, pkgutil, importlib
 
 parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers(help='command to run', metavar='{command}')
 
-import commands.dump
-commands.dump.add_parser(subparsers)
-import commands.stat
-commands.stat.add_parser(subparsers)
+command_names = ['dump', 'hello', 'stat']
+
+import commands
+
+for command_name in command_names:
+    importlib.import_module('commands.'+command_name)
+    getattr(commands, command_name).add_parser(subparsers)
+#import commands.dump
+#3commands.dump.add_parser(subparsers)
+#mport commands.hello
+#commands.hello.add_parser(subparsers)
+#import commands.stat
+#commands.stat.add_parser(subparsers)
 
 args = parser.parse_args()
 

@@ -13,3 +13,4 @@ python_version = "3"
 
 [scripts]
 tests = "python -m unittest discover -s tests"
+test = "python -m unittest"

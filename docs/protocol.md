@@ -26,21 +26,19 @@ Memory of interest appears to be within the 0xa000 - 0xafff range.
 
 A query consists of:
 
-    TLAARRCC
+    TLAA??CC
 
 Where:
 
  * T is the message type - Q for Query or W for Write
- * L is a byte indicating the number (length) of 2 byte words to return.
- * AA is a little endian word address (shifting the address by 1 shifts by 2 bytes).
- * ?? appears to always be null (0x0000).
+ * L is a byte indicating the number (length) of 2 byte words to return (0x00 will return 1 word).
+ * AAAA is a little endian word address (shifting the address by 1 shifts by 2 bytes).
  * CC is a Cyclic Redundancy Check.
 
 A response consists of:
 
- * TLAA??CC the exact bytes from the query (including CRC).
+ * TLAAAACC the exact bytes from the query (including CRC).
  * M the requested memory.
- * ?? two unexplained bytes, not always null.
  * CC CRC of the query + memory.
 
 It's possible to request between 0-255 bytes of memory, 
@@ -55,9 +53,9 @@ E.g:
 
 ```
 Query:    0x510000a000009d4b
-            TTLLAAAA????CCCC
+            TTLLAAAAAAAACCCC
 Response: 0x510000a000009d4b0100d819
-            TTLLAAAA????CCCC????CCCC
+            TTLLAAAAAAAACCCCMMMMCCCC
 ```
 
 # Authentication

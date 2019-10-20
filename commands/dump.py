@@ -1,28 +1,27 @@
 def add_parser(subparsers):
-	parser = subparsers.add_parser('dump', help='dump memory to stdout')
-	parser.set_defaults(func=run)
-
-def run(args):
-	login()
-
-	# Before 0xa001 we don't get anything back
-	start=0xa001
-	# How much to get at a time (also tied to console line length currently)
-	length=0x10
-	# When to stop
-	end=0xa2ff
-	for address in range(start, end, length):
-		hexaddy = binascii.hexlify(struct.pack(">H", address))
-		mem = binascii.hexlify(get(address, length))
-		print(b''.join([b'0x',hexaddy,b' ',mem]).decode('utf-8'))
+    parser = subparsers.add_parser('dump', help='dump memory to stdout')
+    parser.set_defaults(func=run)
 
 import serial, time, struct, hashlib, binascii, config
 from crc import CRC
 from config import Config
 
-# Initialise USB port
-SPPort = serial.Serial(Config().get('port'), baudrate=Config().get('baudrate'), timeout=0.5)
-SPPort.flushOutput()
+def run(args):
+    # Initialise USB port
+    SPPort = serial.Serial(Config().get('port'), baudrate=Config().get('baudrate'), timeout=0.5)
+    SPPort.flushOutput()
+    login()
+
+    # Before 0xa001 we don't get anything back
+    start=0xa001
+    # How much to get at a time (also tied to console line length currently)
+    length=0x10
+    # When to stop
+    end=0xa2ff
+    for address in range(start, end, length):
+        hexaddy = binascii.hexlify(struct.pack(">H", address))
+        mem = binascii.hexlify(get(address, length))
+        print(b''.join([b'0x',hexaddy,b' ',mem]).decode('utf-8'))
 
 def calculateCRCI(msg):
     return CRC(msg).as_int()
@@ -81,6 +80,7 @@ def login():
 
 def doReadRequest(address, length):
     r = getReadRequest(address, length)
+    print("Q", binascii.hexlify(r))
     SPPort.write(r)
     SPPort.flushOutput()
     responseBuffer = bytearray()
@@ -91,6 +91,7 @@ def doReadRequest(address, length):
             break
     if calculateCRCI(responseBuffer) != 0:
         responseBuffer = bytearray()
+    print("R", binascii.hexlify(responseBuffer))
     return responseBuffer # If it fails and just times out, will be empty (or if it fails CRC)
     
 def get(address, length):

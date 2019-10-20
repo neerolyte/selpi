@@ -1,21 +1,49 @@
-import unittest, struct
+from unittest import TestCase
+from unittest.mock import MagicMock
 from protocol import Protocol
+from connection import Connection
+from crc import CRC
+from error import ValidationError
 
-class ProtocolTest(unittest.TestCase):
-    """
-    SP LINK sends 4x of these when checking that it's talking to a SP Pro.
-    Simplest way to check is to listen with `nc -l $port` and then configure SP LINK to do a TCP connection to it.
-    """
-    def test_calculate_hello_message(self):
-        # The format of the message appears to be:
-        #   Q (1B) for query (\x51 is a literal Q)
-        #   Len (1B) requesting the number of 2 bytes words to return
-        #   Address (2BLE) The address to start returning memory from
-        #   Null (2B) Reserved?
-        #   CRC (2B) Cyclic Reduncancy Check
-        #            Q   Len.Address Null    CRC
-        expected = b'\x51\x00\x00\xa0\x00\x00\x9d\x4b'
-        self.assertEqual(expected, Protocol().get_hello_msg())
+from tests.examples import protocol as examples
 
-if __name__ == '__main__':
-    unittest.main() 
+def mock_connection(data: bytes):
+    connection = Connection()
+    connection.read = MagicMock(return_value = data)
+    connection.write = MagicMock()
+    return connection
+
+class ProtocolTest(TestCase):
+    def test_query_hello(self):
+        example = examples.get('hello')
+        connection = mock_connection(example.get('read'))
+        protocol = Protocol(connection)
+        self.assertEqual(b'\x01\0', protocol.query(0xa000, 0))
+        connection.write.assert_called_once_with(example.get('sent'))
+
+    def test_query_auth_init_0(self):
+        example = examples.get('auth_init_0')
+        connection = mock_connection(example.get('read'))
+        protocol = Protocol(connection)
+        self.assertEqual(b'z\xb2\x9f\xdeh\x1a\xe0\xb1\'\'\x08\x8f\x80\xc4\xba\x8b', protocol.query(0x1f0000, 7))
+        connection.write.assert_called_once_with(example.get('sent'))
+
+
+    def test_query_short_response(self):
+        protocol = Protocol(mock_connection(b'123456'))
+        with self.assertRaises(ValidationError) as context:
+            protocol.query(0xa000, 8)
+        self.assertEqual(
+            'Incorrect data length (6 of 28 bytes)',
+            context.exception.args[0]
+        )
+
+    def test_query_invalid_crc_response(self):
+        response = b'12345678901234567890123456'
+        protocol = Protocol(mock_connection(response))
+        with self.assertRaises(ValidationError) as context:
+            protocol.query(0xa000, 7)
+        self.assertEqual(
+            'Incorrect CRC (0x958a)',
+            context.exception.args[0]
+        )
