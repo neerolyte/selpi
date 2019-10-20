@@ -39,7 +39,7 @@ where:
 A query response consists of:
 
  * TLAAAACC the exact bytes from the query (including CRC).
- * M the requested memory.
+ * MM the requested memory (the number of 2 byte words specified by L + 1).
  * CC CRC of the query + memory.
 
 It's possible to request between 0-255 bytes of memory, 
@@ -56,7 +56,7 @@ where:
  * L is a byte indicating the number (length) of 2 byte words to be written.
  * AAAA is a little endian word address (shifting the address by 1 shifts by 2 bytes).
  * CC is a Cyclic Redundancy Check (everything to the left).
- * DD is the data to write.
+ * DD is the data to write, between 1 and 256 words (as specified by L + 1).
 
 ## Example Messages
 
