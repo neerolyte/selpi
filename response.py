@@ -6,12 +6,15 @@ from error import ValidationError
 class Response:
     def __init__(self, request: Request):
         self.__request = request
-        self.__data = bytes()
+        self.__message = bytes()
+
+    def get_message(self) -> bytes:
+        return self.__message
 
     def expected_length(self) -> int:
         return sum([
-            len(self.__request.message()),     # request message
-            (self.__request.length() + 1) * 2, # memory requested
+            len(self.__request.get_message()),     # request message
+            (self.__request.get_length() + 1) * 2, # memory requested
             2,                                 # crc
         ])
 
@@ -27,7 +30,7 @@ class Response:
         self.validate_crc()
 
     def validate_length(self):
-        actual = len(self.__data)
+        actual = len(self.__message)
         expected = self.expected_length()
         if actual == expected:
             return
@@ -37,7 +40,7 @@ class Response:
         )
 
     def validate_crc(self):
-        crc = CRC(self.__data)
+        crc = CRC(self.__message)
         if crc.as_int() == 0:
             return
         raise ValidationError(
@@ -45,8 +48,8 @@ class Response:
             % { 'crc': crc.as_hex().decode("utf-8") }
         )
 
-    def set_data(self, data: bytes):
-        self.__data = data
+    def set_message(self, message: bytes):
+        self.__message = message
 
     """
     Get the memory that the SP PRO returned
@@ -54,9 +57,9 @@ class Response:
     """
     def memory(self) -> bytes:
         self.validate()
-        query_length = len(self.__request.message())
-        memory_length = (self.__request.length() + 1) * 2
+        query_length = len(self.__request.get_message())
+        memory_length = (self.__request.get_length() + 1) * 2
         start = query_length
         end = start + memory_length
-        return self.__data[start:end]
+        return self.__message[start:end]
 

@@ -1,5 +1,5 @@
-from unittest import TestCase
-from unittest.mock import MagicMock
+from unittest import TestCase, skip
+from unittest.mock import MagicMock, call
 from protocol import Protocol
 from connection import Connection
 from crc import CRC
@@ -47,3 +47,29 @@ class ProtocolTest(TestCase):
             'Incorrect CRC (0x958a)',
             context.exception.args[0]
         )
+
+    def test_login_auth_0(self):
+        init = examples.get('auth_init_0')
+        login = examples.get('auth_login_0')
+        connection = Connection()
+        connection.read = MagicMock(side_effect = [
+            init.get('read'),
+            login.get('read')
+        ])
+        connection.write = MagicMock()
+        protocol = Protocol(connection)
+        protocol.login()
+        calls = connection.write.call_args_list
+        connection.write.assert_has_calls([
+            call(init.get('sent')),
+            call(login.get('sent')),
+        ])
+
+    @skip("TODO")
+    def test_login_failed(self):
+        pass
+
+    @skip("TODO")
+    def test_login_alternative_password(self):
+        pass
+

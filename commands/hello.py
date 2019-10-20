@@ -12,37 +12,4 @@ def run(args):
     protocol = Protocol(connection)
     print("Sending client hello")
     protocol.query(0xa000, 0)
-    #if not res.valid():
-    #    print("Invalid response")
-    #    return
     print("SP hello received")
-
-
-    return
-    connection = ConnectionSerial()
-    req = Request(0xa000, 0)
-    print("Sending client hello")
-    connection.write(req.message())
-    res = Response(req)
-    res.set_data(connection.read(res.expected_length()))
-    if not res.valid():
-        print("Invalid response")
-        return
-    print("SP hello received")
-    #protocol = Protocol()
-    #req = protocol.get_hello_msg()
-    #print("requesting", req)
-    #connection.write(req)
-    #length = sum([
-    #    # Query components
-    #    1, # type
-    #    1, # length
-    #    2, # address
-    #    2, # unknown
-    #    2, # crc
-    #    # Response components
-    #    2, # unknown
-    #    2, # crc
-    #])
-    #res = connection.read(length)
-    #print("response", res)

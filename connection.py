@@ -11,15 +11,6 @@ class Connection:
     def write(self, data: bytes):
         raise NotImplementedError
 
-#    """
-#    Query a block of memory from the SP PRO
-#    """
-#    def query(self, address: int, length, int) -> bytes:
-#        req = Request(address, length)
-#        self.write(req.message())
-#        res = Response(req)
-#        res.set_data(connection.read(res.expected_length()))
-#        return res
 
 class ConnectionSerial(Connection):
     def __init__(self):
