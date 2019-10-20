@@ -1,14 +1,23 @@
 #!/usr/bin/env python
 import argparse, pkgutil, importlib
-
+import os, re
+import commands
 parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers(help='command to run', metavar='{command}')
+script_dir = os.path.dirname(os.path.realpath(__file__))
 
-command_names = ['dump', 'hello', 'stat']
+def get_commands() -> list:
+    commands = []
+    for _, _, files in os.walk(script_dir+'/commands'):
+        for file in files:
+            match = re.search('^([a-z]+)\.py$', file)
+            if not match:
+                continue
+            commands.append(match.group(1))
+    commands.sort()
+    return commands
 
-import commands
-
-for command_name in command_names:
+for command_name in get_commands():
     importlib.import_module('commands.'+command_name)
     getattr(commands, command_name).add_parser(subparsers)
 
