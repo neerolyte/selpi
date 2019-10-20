@@ -16,6 +16,8 @@ For those unfamiliar please note that this means no warranty OF ANY KIND is gran
 
 # Getting Started
 
+Ensure your device is [connecting](docs/connecting.md) to the SP Pro.
+
 [Pipenv](https://github.com/pypa/pipenv) is used to control managed dependencies, if it's not already installed, install it:
 
 ```
@@ -42,11 +44,26 @@ Running virtualenv with interpreter /usr/bin/python3
 ✔ Successfully created virtual environment!
 ```
 
-# pvo-sppro2.py
+# Commands
 
-The Python script `pvo-sppro2.py` is designed to upload basic data from a SP Pro 2 to [pvoutput.org](https://pvoutput.org/).
+## stat
 
-Once [connected](docs/connecting.md) to a SP Pro, modify the script to include your PVO credentials and the appropriate `ttyUSB` device. Run it with `python pvo-sppro2.py`.
+The `stat` command displays the currently known stats from the SP PRO:
+
+```bash
+$ ./selpi stat
+commonScaleForACVolts: 4804
+commonScaleForACCurrent: 1997
+commonScaleForDcVolts: 730
+commonScaleForDCCurrent: 21560
+commonScaleForTemperature: 482
+Solar Power: 0.0W
+Solar Energy: 0.0Wh
+Load Power: 0.0W
+Load Energy: 6149710.073349609Wh
+Battery Volts: 24.84869384765625V
+Battery Power: 0.0W
+```
 
 # Acknowledgements
 
