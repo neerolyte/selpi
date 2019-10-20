@@ -31,7 +31,6 @@ class Response:
         expected = self.expected_length()
         if actual == expected:
             return
-        print(self.__data)
         raise ValidationError(
             "Incorrect data length (%(actual)i of %(expected)i bytes)"
             % {'actual': actual, 'expected': expected}
