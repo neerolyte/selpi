@@ -18,7 +18,7 @@ class ConnectionSerial(Connection):
         self.__port = serial.Serial(
             self._config.get('port'),
             baudrate = self._config.get('baudrate'),
-            timeout = 0.5
+            timeout = 0.1
         )
         self.__port.flushOutput()
 
@@ -28,7 +28,7 @@ class ConnectionSerial(Connection):
 
     def read(self, length: int) -> bytes:
         buf = bytearray()
-        attempts = length + 10 # Allow for a few timeouts @ 0.5s
+        attempts = length + 2 # Allow for a few timeouts @ 0.5s
         for i in range(1, attempts):
             buf.extend(self.__port.read())
             if len(buf) == length:

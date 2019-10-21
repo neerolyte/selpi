@@ -21,9 +21,11 @@ class Request:
             raise TypeError("Need at least two bytes")
         type_ = chr(msg[0])
         length = msg[1]
+        if type_ == 'W':
+            return 8 + (length + 1) * 2 + 2
         if type_ == 'Q':
-            return 6 + (length + 1) * 2
-        raise TypeError("Unknown message type %s" % type_)
+            return 8
+        raise TypeError("Unknown message type %s from %s" % (type_, msg))
 
     """
     Create a query request.
