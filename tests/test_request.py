@@ -27,7 +27,6 @@ class TestRequest(TestCase):
         self.assertEqual(256, Request.create_query(0xa000, 0xff).get_word_length())
 
     def test_calculate_message_length(self):
-        msg = examples.get('hello').get('sent')
         self.assertEqual(8, Request.calculate_message_length(b'Q\x00'))
-        self.assertEqual(6+16*2, Request.calculate_message_length(b'Q\x0f'))
-        self.assertEqual(6+256*2, Request.calculate_message_length(b'Q\xff'))
+        self.assertEqual(8, Request.calculate_message_length(b'Q\x0f'))
+        self.assertEqual(8, Request.calculate_message_length(b'Q\xff'))
