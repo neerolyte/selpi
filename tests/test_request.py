@@ -23,6 +23,9 @@ class TestRequest(TestCase):
     def test_word_length_0(self):
         self.assertEqual(1, Request.create_query(0xa000, 0).get_word_length())
 
+    def test_word_length_0(self):
+        self.assertEqual(16, Request.create_query(0xa000, 15).get_word_length())
+
     def test_word_length_ff(self):
         self.assertEqual(256, Request.create_query(0xa000, 0xff).get_word_length())
 
@@ -30,3 +33,18 @@ class TestRequest(TestCase):
         self.assertEqual(8, Request.calculate_message_length(b'Q\x00'))
         self.assertEqual(8, Request.calculate_message_length(b'Q\x0f'))
         self.assertEqual(8, Request.calculate_message_length(b'Q\xff'))
+
+    def test_str_hello(self):
+        msg = b'\x51\x00\x00\xa0\x00\x00\x9d\x4b'
+        request = Request(msg)
+        self.assertEqual('Query(0x0000a000)', str(request))
+
+    def test_str_hello(self):
+        msg = b'\x51\x00\x00\xa0\x00\x00\x9d\x4b'
+        request = Request(msg)
+        self.assertEqual('Query(0xa000)', str(request))
+
+    def test_str_abcd_4(self):
+        msg = b'\x51\x03\xcd\xab\x00\x00'
+        request = Request(msg)
+        self.assertEqual('Query(0xabcd-abd1)', str(request))

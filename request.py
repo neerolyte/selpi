@@ -1,5 +1,6 @@
 import struct
 from crc import CRC
+from binascii import hexlify
 
 class Request:
     def __init__(self, message: bytes):
@@ -58,4 +59,16 @@ class Request:
         return self.__message[1] + 1
 
     def get_address(self) -> int:
-        return self.__address
+        return struct.unpack('<I', self.__message[2:6])[0]
+
+    def __str__(self) -> str:
+        start = self.get_address()
+        words = [self.address_to_str(start)]
+        length = self.get_word_length()
+        if length > 1:
+            words.append(self.address_to_str(start+length))
+        return 'Query(0x%s)' % '-'.join(words)
+
+    def address_to_str(self, address) -> str:
+        hex = hexlify(struct.pack('>I', address)).decode('utf8')
+        return hex.lstrip('0')

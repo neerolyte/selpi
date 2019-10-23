@@ -52,7 +52,7 @@ class Proxy:
         msg = self.__buffer[0:wl]
         self.__buffer = self.__buffer[wl:]
         req = Request(msg)
-        logging.debug("request:  %s" % bytes(msg))
+        logging.debug("request:  %s" % req)
         res = self.__protocol.send(req)
         msg = res.get_message()
         logging.debug("response: %s" % bytes(msg))
