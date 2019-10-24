@@ -46,6 +46,29 @@ Running virtualenv with interpreter /usr/bin/python3
 
 # Commands
 
+Selpi uses a sub command structure meaning the base `selpi` accepts multiple commands that run it in different modes.
+
+See `selpi --help` for a full list of commands, some commands are documented below.
+
+Additional logging output can be printed with `selpi --log=debug ...`.
+
+## proxy
+
+The `proxy` command is used to expose the Selectronic SP PRO over TCP.
+
+The listening address and port is controlled with the environment variables:
+
+ * `proxy_bind_address` what address to listen on (default `127.0.0.1`)
+ * `proxy_bind_port` what port to listen on (default `1234`)
+
+To listen on all addresses on port 5555:
+
+```
+$ proxy_bind_address=0.0.0.0 proxy_bind_port=5555 selpi proxy
+```
+
+TP LINK can then be configured to connect to the IP and port 5555 of the device `selpi` is started on.
+
 ## stat
 
 The `stat` command displays the currently known stats from the SP PRO:

@@ -2,7 +2,7 @@ import struct
 from crc import CRC
 from connection import Connection
 from response import Response
-from request import *
+from request import Request
 import hashlib
 
 class Protocol:
@@ -13,7 +13,7 @@ class Protocol:
     Request memory from the SP Pro
     """
     def query(self, address: int, length: int) -> bytes:
-        req = ReadRequest(address, length)
+        req = Request.create_query(address, length)
         res = self.send(req)
         return res.memory()
 
@@ -21,7 +21,7 @@ class Protocol:
     Write some data to memory in the SP Pro
     """
     def write(self, address: int, data: bytes):
-        request = WriteRequest(address, data)
+        request = Request.create_write(address, data)
         response = self.send(request)
         if not request.get_message() == response.get_message():
             raise Exception("todo: write check failed?")

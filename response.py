@@ -12,11 +12,15 @@ class Response:
         return self.__message
 
     def expected_length(self) -> int:
-        return sum([
-            len(self.__request.get_message()),     # request message
-            (self.__request.get_length() + 1) * 2, # memory requested
-            2,                                 # crc
-        ])
+        req = self.__request
+        msg = req.get_message()
+        type_ = chr(msg[0])
+        word_length = msg[1]
+        if type_ == 'Q':
+            return len(req.get_message()) + req.get_word_length() * 2 + 2
+        if type_ == 'W':
+            return len(req.get_message())
+        raise BufferError
 
     def valid(self) -> bool:
         try:
@@ -58,7 +62,7 @@ class Response:
     def memory(self) -> bytes:
         self.validate()
         query_length = len(self.__request.get_message())
-        memory_length = (self.__request.get_length() + 1) * 2
+        memory_length = (self.__request.get_word_length()) * 2
         start = query_length
         end = start + memory_length
         return self.__message[start:end]
