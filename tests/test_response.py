@@ -8,9 +8,13 @@ class TestResponse(TestCase):
         req = Request.create_query(0xa000, 0)
         self.assertEqual(12, Response(req).expected_length())
 
-    def test_expected_length_0(self):
+    def test_expected_length_ff(self):
         req = Request.create_query(0xa000, 0xff)
         self.assertEqual(12+255*2, Response(req).expected_length())
+
+    def test_write_expected_length_07(self):
+        req = Request.create_write(0x001f, b'00' * 8)
+        self.assertEqual(26, Response(req).expected_length())
 
     def test_valid_no_data(self):
         req = Request.create_query(0xa000, 0) # client hello

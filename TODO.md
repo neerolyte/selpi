@@ -4,7 +4,6 @@
 - [Switcher?](#switcher)
 - [Reimplement PVO](#reimplement-pvo)
 - [Explore OpenEnergyMonitor integration](#explore-openenergymonitor-integration)
-- [Logging ... with levels](#logging--with-levels)
 
 <!-- /TOC -->
 
@@ -23,7 +22,3 @@ Try writing something that talks to the SP Pro directly over ttyUSB and then lis
 OEM looks like a promising place to dump data from the SP PRO (more usable than select.live anyway).
 
 https://openenergymonitor.org
-
-# Logging ... with levels
-
-So I can spam debug statements out to see what's going on.

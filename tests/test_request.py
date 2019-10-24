@@ -33,6 +33,7 @@ class TestRequest(TestCase):
         self.assertEqual(8, Request.calculate_message_length(b'Q\x00'))
         self.assertEqual(8, Request.calculate_message_length(b'Q\x0f'))
         self.assertEqual(8, Request.calculate_message_length(b'Q\xff'))
+        self.assertEqual(16, Request.calculate_message_length(b'W\x02'))
 
     def test_str_hello(self):
         msg = b'\x51\x00\x00\xa0\x00\x00\x9d\x4b'

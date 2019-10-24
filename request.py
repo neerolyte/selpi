@@ -49,8 +49,8 @@ class Request:
     def get_message(self) -> bytes:
         return self.__message
 
-    def get_type(self) -> bytes:
-        return self.__message[0]
+    def get_type(self) -> str:
+        return chr(self.__message[0])
 
     """
     Get the number of words either being requested or written
@@ -67,7 +67,12 @@ class Request:
         length = self.get_word_length()
         if length > 1:
             words.append(self.address_to_str(start+length))
-        return 'Query(0x%s)' % '-'.join(words)
+        type_ = self.get_type()
+        if type_ == 'Q':
+            return 'Query(0x%s)' % '-'.join(words)
+        if type_ == 'W':
+            return 'Write(0x%s)' % '-'.join(words)
+        return BufferError("Invalid type %s" % type_)
 
     def address_to_str(self, address) -> str:
         hex = hexlify(struct.pack('>I', address)).decode('utf8')
