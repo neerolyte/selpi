@@ -6,7 +6,7 @@ Selectronic make a monitoring device that pairs with the SaaS service [select.li
 
 # Basic connection
 
-SPLink connects to select.live on port 7528 so it's possible to use the `openssl` utility to establish a basic connection:
+SPLink connects to select.live on port 7528 via standard TLS so it's possible to use the `openssl` utility to establish a basic connection:
 
 ```
 $ openssl s_client -connect select.live:7528
