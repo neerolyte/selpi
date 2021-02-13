@@ -14,16 +14,34 @@ def create():
         raise NotImplementedError("Connection type not implemented: '"+connectionType.decode('ascii')+"'")
 
 class Connection:
+    def __init__(self):
+        self.__connected = False
+
+    def connect(self):
+        if self.__connected:
+            return
+        self._connect()
+        self.__connected = True
+
+    def _connect(self):
+        raise NotImplementedError
 
     def read(self, length: int):
+        self.connect()
+        return self._read(length)
+
+    def _read(self, length: int):
         raise NotImplementedError
 
     def write(self, data: bytes):
+        self.connect()
+        return self._write(data)
+
+    def _write(self, data: bytes):
         raise NotImplementedError
 
 class ConnectionSerial(Connection):
-    def __init__(self):
-        super().__init__()
+    def _connect(self):
         self.__port = serial.Serial(
             os.getenvb(b'SELPI_CONNECTION_SERIAL_PORT'),
             baudrate = os.getenvb(b'SELPI_CONNECTION_SERIAL_BAUDRATE'),
@@ -32,11 +50,11 @@ class ConnectionSerial(Connection):
         self.__port.flushOutput()
         self.__buf = bytearray()
 
-    def write(self, data: bytes):
+    def _write(self, data: bytes):
         self.__port.write(data)
         self.__port.flushOutput()
 
-    def read(self, length: int) -> bytes:
+    def _read(self, length: int) -> bytes:
         attempts = 3
         while len(self.__buf) < length:
             remaining = length - len(self.__buf)
@@ -53,8 +71,7 @@ class ConnectionSerial(Connection):
 
 
 class ConnectionSelectLive(Connection):
-    def __init__(self):
-        super().__init__()
+    def _connect(self):
         hostname = b'select.live'
         port = 7528
         username = os.getenvb(b'SELPI_CONNECTION_SELECT_LIVE_USERNAME')
@@ -64,19 +81,19 @@ class ConnectionSelectLive(Connection):
         plainSocket = socket.create_connection((hostname, port))
         self.__sock = context.wrap_socket(plainSocket, server_hostname=hostname)
 
-        # Authenticate 
-        self.read(1024) # b'LOGIN\r\n'
-        self.write(b'USER:'+username+b':'+password+b'\r\n')
-        self.read(1024) # b'OK\r\n'
+        # Authenticate
+        self._read(1024) # b'LOGIN\r\n'
+        self._write(b'USER:'+username+b':'+password+b'\r\n')
+        self._read(1024) # b'OK\r\n'
 
         # Connect
-        self.write(b'CONNECT:'+device+b'\r\n')
-        self.read(1024) # b'OK\r\n'
-                
-    def read(self, length: int):
+        self._write(b'CONNECT:'+device+b'\r\n')
+        self._read(1024) # b'OK\r\n'
+
+    def _read(self, length: int):
         return self.__sock.read(length)
 
-    def write(self, data: bytes):
+    def _write(self, data: bytes):
         return self.__sock.write(data)
 
 
