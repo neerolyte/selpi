@@ -1,10 +1,10 @@
+import settings
 import serial
-from config import Config
+import os
+import socket
+import ssl
 
 class Connection:
-    def __init__(self):
-        self._config = Config()
-
     def read(self, length: int):
         raise NotImplementedError
 
@@ -16,8 +16,8 @@ class ConnectionSerial(Connection):
     def __init__(self):
         super().__init__()
         self.__port = serial.Serial(
-            self._config.get('port'),
-            baudrate = self._config.get('baudrate'),
+            os.getenvb(b'SELPI_CONNECTION_SERIAL_PORT'),
+            baudrate = os.getenvb(b'SELPI_CONNECTION_SERIAL_BAUDRATE'),
             timeout = 0.1
         )
         self.__port.flushOutput()
@@ -41,3 +41,33 @@ class ConnectionSerial(Connection):
         buf = self.__buf[0:length]
         self.__buf = self.__buf[length:]
         return buf
+
+
+class ConnectionSelectLive(Connection):
+    def __init__(self):
+        super().__init__()
+        hostname = b'select.live'
+        port = 7528
+        username = os.getenvb(b'SELPI_CONNECTION_SELECT_LIVE_USERNAME')
+        password = os.getenvb(b'SELPI_CONNECTION_SELECT_LIVE_PASSWORD')
+        device = os.getenvb(b'SELPI_CONNECTION_SELECT_LIVE_DEVICE')
+        context = ssl.create_default_context()
+        plainSocket = socket.create_connection((hostname, port))
+        self.__sock = context.wrap_socket(plainSocket, server_hostname=hostname)
+
+        # Authenticate 
+        self.read(1024) # b'LOGIN\r\n'
+        self.write(b'USER:'+username+b':'+password+b'\r\n')
+        self.read(1024) # b'OK\r\n'
+
+        # Connect
+        self.write(b'CONNECT:'+device+b'\r\n')
+        self.read(1024) # b'OK\r\n'
+                
+    def read(self, length: int):
+        return self.__sock.read(length)
+
+    def write(self, data: bytes):
+        return self.__sock.write(data)
+
+
