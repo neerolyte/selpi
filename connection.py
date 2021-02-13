@@ -4,13 +4,22 @@ import os
 import socket
 import ssl
 
+def create():
+    connectionType = os.getenvb(b'SELPI_CONNECTION_TYPE')
+    if connectionType == b'Serial':
+        return ConnectionSerial()
+    elif connectionType == b'SelectLive':
+        return ConnectionSelectLive()
+    else:
+        raise NotImplementedError("Connection type not implemented: '"+connectionType.decode('ascii')+"'")
+
 class Connection:
+
     def read(self, length: int):
         raise NotImplementedError
 
     def write(self, data: bytes):
         raise NotImplementedError
-
 
 class ConnectionSerial(Connection):
     def __init__(self):

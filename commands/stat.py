@@ -1,4 +1,4 @@
-from connection import *
+import connection
 from protocol import Protocol
 import struct
 from time import sleep
@@ -8,10 +8,7 @@ def add_parser(subparsers):
     parser.set_defaults(func=run)
 
 def run(args):
-    #connection = ConnectionSerial() TODO: how do I make this dynamic?
-    connection = ConnectionSelectLive()
-
-    protocol = Protocol(connection)
+    protocol = Protocol(connection.create())
     protocol.login()
 
     scale_mem = protocol.query(0xa028, 4)
