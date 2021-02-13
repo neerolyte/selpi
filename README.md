@@ -56,18 +56,15 @@ Additional logging output can be printed with `selpi --log=debug ...`.
 
 The `proxy` command is used to expose the Selectronic SP PRO over TCP.
 
-The listening address and port is controlled with the environment variables:
+The listening address and port can be controlled from `.env.local`.
 
- * `proxy_bind_address` what address to listen on (default `127.0.0.1`)
- * `proxy_bind_port` what port to listen on (default `1234`)
-
-To listen on all addresses on port 5555:
+To start the proxy run:
 
 ```
-$ proxy_bind_address=0.0.0.0 proxy_bind_port=5555 selpi proxy
+$ ./selpi proxy
 ```
 
-TP LINK can then be configured to connect to the IP and port 5555 of the device `selpi` is started on.
+TP LINK can then be configured to connect to the device `selpi` is started on.
 
 ## stat
 

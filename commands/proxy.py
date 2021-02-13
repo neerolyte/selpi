@@ -1,8 +1,9 @@
-from connection import ConnectionSerial
+import settings
+import os
+import connection
 from protocol import Protocol
 import struct
 import socket
-from config import Config
 from request import Request
 import logging
 
@@ -11,15 +12,13 @@ def add_parser(subparsers):
     parser.set_defaults(func=run)
 
 def run(args):
-    config = Config()
-    address = config.get('proxy_bind_address')
-    port = config.get('proxy_bind_port')
+    address = os.getenvb(b'SELPI_PROXY_BIND_ADDRESS')
+    port = int(os.getenvb(b'SELPI_PROXY_BIND_PORT'))
     Proxy().bind(address, port)
 
 class Proxy:
     def __init__(self):
-        connection = ConnectionSerial()
-        self.__protocol = Protocol(connection)
+        self.__protocol = Protocol(connection.create())
         self.__buffer = bytearray()
         self.__serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
