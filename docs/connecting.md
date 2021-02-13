@@ -3,11 +3,13 @@
 <!-- TOC -->
 
 - [Connecting](#connecting)
-- [USB](#usb)
+	- [USB](#usb)
 
 <!-- /TOC -->
 
-# USB
+Selpi supports multiple ways of connecting, see `.env.dist` for configuration.
+
+## USB
 
 The USB plug found externally on a SP Pro Series 2 is a FTDI serial device that for whatever reason doesn't get recognised as one by current Linux kernels (submitted [here](https://usb-ids.gowdy.us/read/UD/0403/8508) but I'm not sure if that's the right place).
 
@@ -31,7 +33,7 @@ Now it should be loaded:
 
 ```bash
 root@rasp:~# lsmod | grep ^ftdi_sio
-ftdi_sio               32963  0 
+ftdi_sio               32963  0
 ```
 
 When connecting the SP Pro dmesg will log something like:
@@ -63,6 +65,8 @@ The final lines in `dmesg` should now be like:
 In this case the final line indicates that a device is created at `/dev/ttyUSB0`:
 
 ```bash
-root@rasp:~# ls -la /dev/ttyUSB0 
+root@rasp:~# ls -la /dev/ttyUSB0
 crw-rw---- 1 root dialout 188, 0 Oct 18 05:09 /dev/ttyUSB0
 ```
+
+The default serial configuration from `.env.dist` should work for this set up.
