@@ -49,4 +49,15 @@ CONNECT:123456
 READY
 ```
 
-I'm not yet sure if this is just a connectivity check or if it does something else as well. Responses of `REJECTED` and `OFFLINE` are also possible.
+Responses of `REJECTED` and `OFFLINE` are also possible.
+
+If `READY` is returned the stream is now directly communicating with the SP Pro, see [protocol](./protocol.md).
+
+## QUIT
+
+Sending `QUIT` should get a response of `DONE` and a remote termination of the stream.
+
+```
+QUIT
+DONE
+```
