@@ -14,20 +14,23 @@ types = {
 }
 
 map = {
-    # "Name": [address, type],
-    "CommonScaleForAcVolts": [41000, "ushort"],
-    "CommonScaleForAcCurrent": [41001, "ushort"],
-    "CommonScaleForDcVolts": [41002, "ushort"],
-    "CommonScaleForDcCurrent": [41003, "ushort"],
-    "CommonScaleForTemperature": [41004, "ushort"],
-    "CommonScaleForInternalVoltages": [41005, "ushort"],
-    "TotalKacokWhTotalAcc": [41519, "uint"],
-    "CombinedKacoAcPowerHiRes": [41896, "uint"],
-    "LoadAcPower": [41107, "uint"],
-    "ACLoadkWhTotalAcc": [41438, "uint"],
-    "BatteryVolts": [41052, "ushort"],
-    "DCBatteryPower": [41007, "uint"],
+    # "Name": [address, type, units],
+    "CommonScaleForAcVolts": [41000, "ushort", "Unit"],
+    "CommonScaleForAcCurrent": [41001, "ushort", "Unit"],
+    "CommonScaleForDcVolts": [41002, "ushort", "Unit"],
+    "CommonScaleForDcCurrent": [41003, "ushort", "Unit"],
+    "CommonScaleForTemperature": [41004, "ushort", "Unit"],
+    "CommonScaleForInternalVoltages": [41005, "ushort", "Unit"],
+    "TotalKacokWhTotalAcc": [41519, "uint", "AcEnergy"],
+    "CombinedKacoAcPowerHiRes": [41896, "uint", "AcPower"],
+    "LoadAcPower": [41107, "uint", "AcPower"],
+    "ACLoadkWhTotalAcc": [41438, "uint", "AcEnergy"],
+    "BatteryVolts": [41052, "ushort", "DcVolts"],
+    "DCBatteryPower": [41007, "uint", "DcPower"],
 }
+
+def _unpack(format, bytes):
+    return struct.unpack(format, bytes)[0]
 
 class Data:
     def __init__(self):
@@ -40,68 +43,72 @@ class Data:
         self.__commonScaleForTemperature = None
         self.__commonScaleForInternalVoltages = None
 
-    def getCommonScaleForAcVolts(self):
+    def __getCommonScaleForAcVolts(self):
         if self.__commonScaleForAcVolts == None:
             self.__populateCommonScales()
         return self.__commonScaleForAcVolts
 
-    def getCommonScaleForAcCurrent(self):
+    def __getCommonScaleForAcCurrent(self):
         if self.__commonScaleForAcCurrent == None:
             self.__populateCommonScales()
         return self.__commonScaleForAcCurrent
 
-    def getCommonScaleForDcVolts(self):
+    def __getCommonScaleForDcVolts(self):
         if self.__commonScaleForDcVolts == None:
             self.__populateCommonScales()
         return self.__commonScaleForDcVolts
 
-    def getCommonScaleForDcCurrent(self):
+    def __getCommonScaleForDcCurrent(self):
         if self.__commonScaleForDcCurrent == None:
             self.__populateCommonScales()
         return self.__commonScaleForDcCurrent
 
-    def __scaleForAcPower(self, unscaledPower):
-        return unscaledPower * self.getCommonScaleForAcVolts() * self.getCommonScaleForAcCurrent() / 26214400.0
+    def _scaleForAcPower(self, unscaledPower):
+        return unscaledPower * self.__getCommonScaleForAcVolts() * self.__getCommonScaleForAcCurrent() / 26214400.0
 
-    def __scaleForAcEnergy(self, unscaledEnergy):
-        return unscaledEnergy * 24 * self.getCommonScaleForAcVolts() * self.getCommonScaleForAcCurrent() / 3276800.0
+    def _scaleForAcEnergy(self, unscaledEnergy):
+        return unscaledEnergy * 24 * self.__getCommonScaleForAcVolts() * self.__getCommonScaleForAcCurrent() / 3276800.0
 
-    def __scaleForDcVolts(self, unscaledVolts):
-        return unscaledVolts * self.getCommonScaleForDcVolts() / 327680.0
+    def _scaleForDcVolts(self, unscaledVolts):
+        return unscaledVolts * self.__getCommonScaleForDcVolts() / 327680.0
 
-    def __scaleForDcPower(self, unscaledPower):
-        return unscaledPower * self.getCommonScaleForDcVolts() * self.getCommonScaleForDcCurrent() / 3276800.0
+    def _scaleForDcPower(self, unscaledPower):
+        return unscaledPower * self.__getCommonScaleForDcVolts() * self.__getCommonScaleForDcCurrent() / 3276800.0
 
     def getCombinedKacoAcPowerHiRes(self):
-        return self.__scaleForAcPower(self.__query("CombinedKacoAcPowerHiRes"))
+        return self.__query("CombinedKacoAcPowerHiRes")
 
     def getLoadAcPower(self):
-        return self.__scaleForAcPower(self.__query("LoadAcPower"))
+        return self.__query("LoadAcPower")
 
     def getACLoadkWhTotalAcc(self):
-        return self.__scaleForAcEnergy(self.__query("ACLoadkWhTotalAcc"))
+        return self.__query("ACLoadkWhTotalAcc")
 
     def getTotalKacokWhTotalAcc(self):
-        return self.__scaleForAcEnergy(self.__query("TotalKacokWhTotalAcc"))
+        return self.__query("TotalKacokWhTotalAcc")
 
     def getBatteryVolts(self):
-        return self.__scaleForDcVolts(self.__query("BatteryVolts"))
+        return self.__query("BatteryVolts")
 
     def getDCBatteryPower(self):
-        return self.__scaleForDcPower(self.__query("DCBatteryPower"))
+        return self.__query("DCBatteryPower")
 
     def __query(self, name):
-        address, dataType = map[name]
+        address, dataType, unit = map[name]
         format = types[dataType]["format"]
         words = types[dataType]["words"]
         rawBytes = self.__protocol.query(address, words - 1)
-        return struct.unpack(format, rawBytes)[0]
+        unscaled = _unpack(format, rawBytes)
+        scaleMethod = getattr(self, '_scaleFor'+unit)
+        return scaleMethod(unscaled)
 
     def __populateCommonScales(self):
-        scale_mem = self.__protocol.query(41000, 5)
-        self.__commonScaleForAcVolts = struct.unpack("<H", bytes(scale_mem[0:2]))[0]
-        self.__commonScaleForAcCurrent = struct.unpack("<H", bytes(scale_mem[2:4]))[0]
-        self.__commonScaleForDcVolts = struct.unpack("<H", bytes(scale_mem[4:6]))[0]
-        self.__commonScaleForDcCurrent = struct.unpack("<H", bytes(scale_mem[6:8]))[0]
-        self.__commonScaleForTemperature = struct.unpack("<H", bytes(scale_mem[8:10]))[0]
-        self.__commonScaleForInternalVoltages = struct.unpack("<H", bytes(scale_mem[10:12]))
+        address, dataType, unit = map["CommonScaleForAcVolts"]
+        format = types[dataType]["format"]
+        scale_mem = self.__protocol.query(address, 5)
+        self.__commonScaleForAcVolts = _unpack(format, scale_mem[0:2])
+        self.__commonScaleForAcCurrent = _unpack(format, scale_mem[2:4])
+        self.__commonScaleForDcVolts = _unpack(format, scale_mem[4:6])
+        self.__commonScaleForDcCurrent = _unpack(format, scale_mem[6:8])
+        self.__commonScaleForTemperature = _unpack(format, scale_mem[8:10])
+        self.__commonScaleForInternalVoltages = _unpack(format, scale_mem[10:12])
