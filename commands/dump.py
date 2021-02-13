@@ -1,6 +1,6 @@
 import struct, hashlib, binascii
 from crc import CRC
-from connection import ConnectionSerial
+import connection
 from protocol import Protocol
 
 def add_parser(subparsers):
@@ -8,8 +8,7 @@ def add_parser(subparsers):
     parser.set_defaults(func=run)
 
 def run(args):
-    connection = ConnectionSerial()
-    protocol = Protocol(connection)
+    protocol = Protocol(connection.create())
     protocol.login()
 
     # Before 0xa001 we don't get anything back
