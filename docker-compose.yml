@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  python:
+    build: ./docker/python
+    init: true
+    volumes:
+      - "$PWD:/selpi"
+    working_dir: /selpi
+    command: tail -f /dev/null
