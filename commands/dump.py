@@ -1,6 +1,5 @@
-import struct, hashlib, binascii, config
+import struct, hashlib, binascii
 from crc import CRC
-from config import Config
 from connection import ConnectionSerial
 from protocol import Protocol
 

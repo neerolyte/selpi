@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [Connecting to the SP Pro Series 2](#connecting-to-the-sp-pro-series-2)
+- [Connecting](#connecting)
 - [USB](#usb)
 
 <!-- /TOC -->
