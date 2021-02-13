@@ -10,6 +10,8 @@ def create():
         return ConnectionSerial()
     elif connectionType == b'SelectLive':
         return ConnectionSelectLive()
+    elif connectionType == b'TCP':
+        return ConnectionTCP()
     else:
         raise NotImplementedError("Connection type not implemented: '"+connectionType.decode('ascii')+"'")
 
@@ -95,5 +97,17 @@ class ConnectionSelectLive(Connection):
 
     def _write(self, data: bytes):
         return self.__sock.write(data)
+
+class ConnectionTCP(Connection):
+    def _connect(self):
+        hostname = os.getenvb(b'SELPI_CONNECTION_TCP_HOSTNAME')
+        port = int(os.getenvb(b'SELPI_CONNECTION_TCP_PORT'))
+        self.__sock = socket.create_connection((hostname, port))
+
+    def _read(self, length: int):
+        return self.__sock.recv(length)
+
+    def _write(self, data: bytes):
+        return self.__sock.send(data)
 
 
