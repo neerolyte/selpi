@@ -126,6 +126,13 @@ MAP = {
         UNITS: "W",
         SCALE: "dc_w",
     },
+    "Shunt2Power": {
+        DESCRIPTION: 'Shunt 2 Power',
+        ADDRESS: 0xa089,
+        TYPE: "short",
+        UNITS: "W",
+        SCALE: "dc_w",
+    },
     "Shunt1Name": {
         DESCRIPTION: 'Shunt 1 Name',
         ADDRESS: 49417,
