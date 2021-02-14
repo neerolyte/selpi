@@ -42,6 +42,9 @@ class ProtocolTest(TestCase):
         ('ACLoadkWhTotalAcc', b'\x19\xeb\x00\x00', 5139822.509765625),
         ('BattOutkWhPreviousAcc', b'\x29\x00\x00\x00', 3783.69140625),
         ('BattSocPercent', b'\xdb\x63', 99.85546875),
+        ('Shunt1Name', b'\x01\x00', 'Solar'),
+        ('Shunt2Name', b'\x00\x00', 'None'),
+        ('Shunt1Name', b'\x3a\x00', 'Error'),
     ))
     def test_scale(self, name, bytes, expected):
         scales = {

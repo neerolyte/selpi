@@ -37,6 +37,20 @@ TYPES = {
     },
 }
 
+SHUNT_NAMES = {
+    0: 'None',
+    1: 'Solar',
+    2: 'Wind',
+    3: 'Hydro',
+    4: 'Charger',
+    5: 'Load',
+    6: 'Dual',
+    7: 'Multiple SP PROs',
+    8: 'Log Only',
+    9: 'System SoC',
+    10: 'Direct SoC Input',
+}
+
 MAP = {
     "CommonScaleForAcVolts": {
         ADDRESS: 41000,
@@ -111,6 +125,20 @@ MAP = {
         UNITS: "W",
         SCALE: "dc_w",
     },
+    "Shunt1Name": {
+        DESCRIPTION: 'Shunt 1 Name',
+        ADDRESS: 49417,
+        TYPE: "short",
+        UNITS: "",
+        SCALE: "shunt_name",
+    },
+    "Shunt2Name": {
+        DESCRIPTION: 'Shunt 2 Name',
+        ADDRESS: 49418,
+        TYPE: "short",
+        UNITS: "",
+        SCALE: "shunt_name",
+    },
     "BatteryTemperature": {
         DESCRIPTION: "Battery Temperature",
         ADDRESS: 0xa03c,
@@ -177,3 +205,8 @@ def _scale_for_temperature(unscaled, scales):
 
 def _scale_for_percent(unscaled, scales):
     return unscaled / MAGIC_PERCENT_DIVISOR
+
+def _scale_for_shunt_name(unscaled, scales):
+    if unscaled in SHUNT_NAMES:
+        return SHUNT_NAMES[unscaled]
+    return 'Error'

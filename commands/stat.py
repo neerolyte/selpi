@@ -14,3 +14,5 @@ def run(args):
     print("ACLoadkWhTotalAcc: %s" % data.get_scaled('ACLoadkWhTotalAcc'))
     print("BattOutkWhPreviousAcc: %s" % data.get_scaled('BattOutkWhPreviousAcc'))
     print("BattSocPercent: %s" % data.get_scaled('BattSocPercent'))
+    print("Shunt1Name: %s" % data.get_scaled('Shunt1Name'))
+    print("Shunt2Name: %s" % data.get_scaled('Shunt2Name'))
