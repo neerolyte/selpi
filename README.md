@@ -72,17 +72,68 @@ The `stat` command displays the currently known stats from the SP PRO:
 
 ```bash
 $ ./selpi stat
-commonScaleForACVolts: 4804
-commonScaleForACCurrent: 1997
-commonScaleForDcVolts: 730
-commonScaleForDCCurrent: 21560
-commonScaleForTemperature: 482
-Solar Power: 0.0W
-Solar Energy: 0.0Wh
-Load Power: 0.0W
-Load Energy: 6149710.073349609Wh
-Battery Volts: 24.84869384765625V
-Battery Power: 0.0W
+[
+  {
+    "description": "AC Solar Power",
+    "name": "CombinedKacoAcPowerHiRes",
+    "value": "572.894287109375W"
+  },
+  {
+    "description": "Shunt 1 Name",
+    "name": "Shunt1Name",
+    "value": "Solar"
+  },
+  {
+    "description": "Shunt 1 Power",
+    "name": "Shunt1Power",
+    "value": "-123.046875W"
+  },
+  {
+    "description": "Shunt 2 Name",
+    "name": "Shunt2Name",
+    "value": "None"
+  },
+  {
+    "description": "Shunt 2 Power",
+    "name": "Shunt2Power",
+    "value": "0.0W"
+  },
+  {
+    "description": "Battery Volts",
+    "name": "BatteryVolts",
+    "value": "55.271759033203125V"
+  },
+  {
+    "description": "Battery Temperature",
+    "name": "BatteryTemperature",
+    "value": "22.838134765625\u00b0C"
+  },
+  {
+    "description": "AC Load Power",
+    "name": "LoadAcPower",
+    "value": "633.8310241699219W"
+  },
+  {
+    "description": "Battery Power",
+    "name": "DCBatteryPower",
+    "value": "19.22607421875W"
+  },
+  {
+    "description": "AC Lifetime Load Energy",
+    "name": "ACLoadkWhTotalAcc",
+    "value": "5143750.927734375Wh"
+  },
+  {
+    "description": "Battery Out Energy Today",
+    "name": "BattOutkWhPreviousAcc",
+    "value": "3783.69140625Wh"
+  },
+  {
+    "description": "Battery State of Charge",
+    "name": "BattSocPercent",
+    "value": "99.67578125%"
+  }
+]
 ```
 
 # Acknowledgements

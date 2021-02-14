@@ -1,6 +1,6 @@
 import struct, hashlib, binascii
 from crc import CRC
-from connection import ConnectionSerial
+import connection
 from protocol import Protocol
 
 def add_parser(subparsers):
@@ -8,8 +8,7 @@ def add_parser(subparsers):
     parser.set_defaults(func=run)
 
 def run(args):
-    connection = ConnectionSerial()
-    protocol = Protocol(connection)
+    protocol = Protocol(connection.create())
     protocol.login()
 
     # Before 0xa001 we don't get anything back
@@ -18,7 +17,8 @@ def run(args):
     length=0x10
     # When to stop
     end=0xa2ff
+    print('          1   2   3   4   5   6   7   8   9   a   b   c   d   e   f   0')
     for address in range(start, end, length):
         hexaddy = binascii.hexlify(struct.pack(">H", address))
-        mem = binascii.hexlify(protocol.query(address, length))
+        mem = binascii.hexlify(protocol.query(address, length - 1))
         print(b''.join([b'0x',hexaddy,b' ',mem]).decode('utf-8'))
