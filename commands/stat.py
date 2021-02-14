@@ -6,9 +6,10 @@ def add_parser(subparsers):
 
 def run(args):
     data = Data()
-    print("Solar Power: %sW" % data.getCombinedKacoAcPowerHiRes())
-    print("Solar Energy: %sWh" % data.getTotalKacokWhTotalAcc())
-    print("Load Power: %sW" % data.getLoadAcPower())
-    print("Load Energy: %sWh" % data.getACLoadkWhTotalAcc())
-    print("Battery Volts: %sV" % data.getBatteryVolts())
-    print("Battery Power: %sW" % data.getDCBatteryPower())
+    print("Shunt1Power: %s" % data.get_scaled('Shunt1Power'))
+    print("BatteryVolts: %s" % data.get_scaled('BatteryVolts'))
+    print("BatteryTemperature: %s" % data.get_scaled('BatteryTemperature'))
+    print("LoadAcPower: %s" % data.get_scaled('LoadAcPower'))
+    print("DCBatteryPower: %s" % data.get_scaled('DCBatteryPower'))
+    print("ACLoadkWhTotalAcc: %s" % data.get_scaled('ACLoadkWhTotalAcc'))
+    print("BattOutkWhPreviousAcc: %s" % data.get_scaled('BattOutkWhPreviousAcc'))

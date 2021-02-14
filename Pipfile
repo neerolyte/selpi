@@ -9,6 +9,7 @@ verify_ssl = true
 pyserial = "*"
 serial = "*"
 python-dotenv = "*"
+unittest-data-provider = "*"
 
 [requires]
 python_version = "3"
