@@ -17,11 +17,7 @@ class Data:
         rawBytes = self.__protocol.query(mem_info[memory.ADDRESS], words - 1)
         logging.debug("response: 0x%s" % binascii.hexlify(rawBytes).decode('ascii'))
         self.__populate_scales()
-        return memory.scale(name, rawBytes, self.__scales)
-        if scale == None:
-            return unscaled
-        scaleMethod = getattr(self, '_scaleFor'+scale)
-        return scaleMethod(unscaled)
+        return memory.convert(name, rawBytes, self.__scales)
 
     def __query(self, name):
         address, dataType, unit = map[name]

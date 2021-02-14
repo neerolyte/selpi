@@ -181,7 +181,10 @@ def get_units(name):
         return MAP[name][UNITS]
     return None
 
-def scale(name, bytes, scales):
+"""
+Convert from SP Pro serial data representation to a local type
+"""
+def convert(name, bytes, scales):
         mem_info = MAP[name]
         type = mem_info[TYPE]
         type_info = TYPES[type]
@@ -190,31 +193,31 @@ def scale(name, bytes, scales):
         unscaled = struct.unpack(format, bytes)[0]
         if not SCALE in mem_info:
             return unscaled
-        scaleMethod = getattr(sys.modules[__name__], '_scale_for_'+mem_info[SCALE])
+        scaleMethod = getattr(sys.modules[__name__], '_convert_'+mem_info[SCALE])
         return scaleMethod(unscaled, scales)
 
-def _scale_for_ac_w(unscaled, scales):
-    return unscaled * scales['CommonScaleForAcVolts'] * scales['CommonScaleForAcCurrent'] / MAGIC_AC_W_DIVISOR
+def _convert_ac_w(raw, scales):
+    return raw * scales['CommonScaleForAcVolts'] * scales['CommonScaleForAcCurrent'] / MAGIC_AC_W_DIVISOR
 
-def _scale_for_ac_wh(unscaled, scales):
-    return unscaled * MAGIC_WH_MULTIPLIER * scales['CommonScaleForAcVolts'] * scales['CommonScaleForAcCurrent'] / MAGIC_WH_DIVISOR
+def _convert_ac_wh(raw, scales):
+    return raw * MAGIC_WH_MULTIPLIER * scales['CommonScaleForAcVolts'] * scales['CommonScaleForAcCurrent'] / MAGIC_WH_DIVISOR
 
-def _scale_for_dc_w(unscaled, scales):
-    return unscaled * scales['CommonScaleForDcVolts'] * scales['CommonScaleForDcCurrent'] / MAGIC_DC_W_DIVISOR
+def _convert_dc_w(raw, scales):
+    return raw * scales['CommonScaleForDcVolts'] * scales['CommonScaleForDcCurrent'] / MAGIC_DC_W_DIVISOR
 
-def _scale_for_dc_wh(unscaled, scales):
-    return unscaled * MAGIC_WH_MULTIPLIER * scales['CommonScaleForDcVolts'] * scales['CommonScaleForDcCurrent'] / MAGIC_WH_DIVISOR
+def _convert_dc_wh(raw, scales):
+    return raw * MAGIC_WH_MULTIPLIER * scales['CommonScaleForDcVolts'] * scales['CommonScaleForDcCurrent'] / MAGIC_WH_DIVISOR
 
-def _scale_for_dc_v(unscaled, scales):
-    return unscaled * scales['CommonScaleForDcVolts'] / MAGIC_DC_V_DIVISOR
+def _convert_dc_v(raw, scales):
+    return raw * scales['CommonScaleForDcVolts'] / MAGIC_DC_V_DIVISOR
 
-def _scale_for_temperature(unscaled, scales):
-    return unscaled * scales['CommonScaleForTemperature'] / MAGIC_TEMPERATURE_DIVISOR
+def _convert_temperature(raw, scales):
+    return raw * scales['CommonScaleForTemperature'] / MAGIC_TEMPERATURE_DIVISOR
 
-def _scale_for_percent(unscaled, scales):
-    return unscaled / MAGIC_PERCENT_DIVISOR
+def _convert_percent(raw, scales):
+    return raw / MAGIC_PERCENT_DIVISOR
 
-def _scale_for_shunt_name(unscaled, scales):
-    if unscaled in SHUNT_NAMES:
-        return SHUNT_NAMES[unscaled]
+def _convert_shunt_name(raw, scales):
+    if raw in SHUNT_NAMES:
+        return SHUNT_NAMES[raw]
     return 'Error'

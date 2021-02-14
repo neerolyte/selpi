@@ -46,7 +46,7 @@ class ProtocolTest(TestCase):
         ('Shunt2Name', b'\x00\x00', 'None'),
         ('Shunt1Name', b'\x3a\x00', 'Error'),
     ))
-    def test_scale(self, name, bytes, expected):
+    def test_convert(self, name, bytes, expected):
         scales = {
             'CommonScaleForDcVolts': 1050,
             'CommonScaleForDcCurrent': 12000,
@@ -54,4 +54,4 @@ class ProtocolTest(TestCase):
             'CommonScaleForAcVolts': 5300,
             'CommonScaleForAcCurrent': 2200,
         }
-        self.assertEqual(memory.scale(name, bytes, scales), expected)
+        self.assertEqual(memory.convert(name, bytes, scales), expected)
