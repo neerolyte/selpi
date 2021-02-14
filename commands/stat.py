@@ -42,8 +42,8 @@ def run(args):
     stats = []
     for var in variables:
         stats.append({
-            "description": memory.MAP[var.get_name()][memory.DESCRIPTION],
+            "description": variable.MAP[var.get_name()][variable.DESCRIPTION],
             "name": var.get_name(),
-            "value": "%s%s" % (var.get_value(scales), memory.MAP[var.get_name()][memory.UNITS]),
+            "value": "%s%s" % (var.get_value(scales), variable.MAP[var.get_name()][variable.UNITS]),
         })
     print(json.dumps(obj=stats, indent=2))
