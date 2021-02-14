@@ -41,6 +41,7 @@ class ProtocolTest(TestCase):
         ('DCBatteryPower', b'\xf4\xff\xff\xff', -46.142578125),
         ('ACLoadkWhTotalAcc', b'\x19\xeb\x00\x00', 5139822.509765625),
         ('BattOutkWhPreviousAcc', b'\x29\x00\x00\x00', 3783.69140625),
+        ('BattSocPercent', b'\xdb\x63', 99.85546875),
     ))
     def test_scale(self, name, bytes, expected):
         scales = {

@@ -16,6 +16,7 @@ MAGIC_DC_V_DIVISOR        = 327680.0
 MAGIC_WH_MULTIPLIER       = 24.0
 MAGIC_WH_DIVISOR          = 3276800.0
 MAGIC_TEMPERATURE_DIVISOR = 32768.0
+MAGIC_PERCENT_DIVISOR     = 256.0
 
 TYPES = {
     "ushort": {
@@ -124,6 +125,13 @@ MAP = {
         UNITS: "Wh",
         SCALE: "dc_wh",
     },
+    "BattSocPercent": {
+        DESCRIPTION: "Battery State of Charge",
+        ADDRESS: 41089,
+        TYPE: "ushort",
+        UNITS: "%",
+        SCALE: "percent",
+    },
 }
 
 def get_type(name):
@@ -166,3 +174,6 @@ def _scale_for_dc_v(unscaled, scales):
 
 def _scale_for_temperature(unscaled, scales):
     return unscaled * scales['CommonScaleForTemperature'] / MAGIC_TEMPERATURE_DIVISOR
+
+def _scale_for_percent(unscaled, scales):
+    return unscaled / MAGIC_PERCENT_DIVISOR
