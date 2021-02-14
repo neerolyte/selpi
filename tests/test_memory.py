@@ -31,6 +31,7 @@ class ProtocolTest(TestCase):
         ('Shunt1Power', b'\x46\xfe', -1699.5849609375),
         ('Shunt1Power', b'\x3f\xfe', -1726.50146484375),
         ('Shunt1Power', b'\x7a\xfe', -1499.6337890625),
+        ('Shunt1Power', b'\xfd\xff', -11.53564453125),
         ('BatteryVolts', b'\x41\x44', 55.989532470703125),
         ('BatteryVolts', b'\x3a\x44', 55.96710205078125),
         ('BatteryTemperature', b'\x44\x05', 21.802978515625),
