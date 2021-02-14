@@ -46,14 +46,14 @@ class VariableTest(TestCase):
         self.assertEqual(words, variable.create(arg).get_words())
 
     @data_provider(lambda: (
-        # (arg, words)
+        # (arg, type)
         ('CommonScaleForDcVolts', 'ushort'),
         ('BattOutkWhPreviousAcc', 'uint'),
         ('DCBatteryPower', 'int'),
         (0xcafe, 'ushort'),
         (0xfeed, 'ushort'),
     ))
-    def test_get_words(self, arg, type):
+    def test_get_type(self, arg, type):
         self.assertEqual(type, variable.create(arg).get_type())
 
     @data_provider(lambda: (
