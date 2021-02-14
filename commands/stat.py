@@ -13,3 +13,4 @@ def run(args):
     print("DCBatteryPower: %s" % data.get_scaled('DCBatteryPower'))
     print("ACLoadkWhTotalAcc: %s" % data.get_scaled('ACLoadkWhTotalAcc'))
     print("BattOutkWhPreviousAcc: %s" % data.get_scaled('BattOutkWhPreviousAcc'))
+    print("BattSocPercent: %s" % data.get_scaled('BattSocPercent'))
