@@ -1,4 +1,6 @@
 from data import Data
+import json
+import memory
 
 def add_parser(subparsers):
     parser = subparsers.add_parser('stat', help='show known stats')
@@ -6,15 +8,25 @@ def add_parser(subparsers):
 
 def run(args):
     data = Data()
-    print("CombinedKacoAcPowerHiRes: %s" % data.get_scaled('CombinedKacoAcPowerHiRes'))
-    print("Shunt1Name: %s" % data.get_scaled('Shunt1Name'))
-    print("Shunt1Power: %s" % data.get_scaled('Shunt1Power'))
-    print("Shunt2Name: %s" % data.get_scaled('Shunt2Name'))
-    print("Shunt2Power: %s" % data.get_scaled('Shunt2Power'))
-    print("BatteryVolts: %s" % data.get_scaled('BatteryVolts'))
-    print("BatteryTemperature: %s" % data.get_scaled('BatteryTemperature'))
-    print("LoadAcPower: %s" % data.get_scaled('LoadAcPower'))
-    print("DCBatteryPower: %s" % data.get_scaled('DCBatteryPower'))
-    print("ACLoadkWhTotalAcc: %s" % data.get_scaled('ACLoadkWhTotalAcc'))
-    print("BattOutkWhPreviousAcc: %s" % data.get_scaled('BattOutkWhPreviousAcc'))
-    print("BattSocPercent: %s" % data.get_scaled('BattSocPercent'))
+    names = [
+        'CombinedKacoAcPowerHiRes',
+        'Shunt1Name',
+        'Shunt1Power',
+        'Shunt2Name',
+        'Shunt2Power',
+        'BatteryVolts',
+        'BatteryTemperature',
+        'LoadAcPower',
+        'DCBatteryPower',
+        'ACLoadkWhTotalAcc',
+        'BattOutkWhPreviousAcc',
+        'BattSocPercent',
+    ]
+    stats = []
+    for name in names:
+        stats.append({
+            "description": memory.MAP[name][memory.DESCRIPTION],
+            "name": name,
+            "value": "%s%s" % (data.get_scaled(name), memory.MAP[name][memory.UNITS]),
+        })
+    print(json.dumps(obj=stats, indent=2))
