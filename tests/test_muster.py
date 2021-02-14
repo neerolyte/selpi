@@ -1,7 +1,7 @@
 from unittest import TestCase, skip
+from unittest.mock import Mock, call
 from muster import Muster
 from unittest_data_provider import data_provider
-from unittest.mock import Mock
 import variable
 
 class MusterTest(TestCase):
@@ -19,5 +19,5 @@ class MusterTest(TestCase):
         self.assertEqual('CommonScaleForTemperature', rvars[1].get_name())
         self.assertEqual(b'\x12\x34', rvars[0].get_bytes())
         self.assertEqual(b'\x56\x78', rvars[1].get_bytes())
-        self.assertEqual((41000, 0), protocol.query.call_args_list[0].args)
-        self.assertEqual((41004, 0), protocol.query.call_args_list[1].args)
+        self.assertEqual(call(41000, 0), protocol.query.call_args_list[0])
+        self.assertEqual(call(41004, 0), protocol.query.call_args_list[1])
