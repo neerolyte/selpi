@@ -226,8 +226,7 @@ class Variable:
     Get the number of words this variables takes up in memory
     """
     def get_words(self):
-        type = TYPES[self.get_type()]
-        return type[WORDS]
+        return TYPES[self.get_type()][WORDS]
 
     def get_type(self):
         if not self.__name in MAP:
