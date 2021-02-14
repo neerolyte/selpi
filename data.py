@@ -19,15 +19,6 @@ class Data:
         self.__populate_scales()
         return memory.convert(name, rawBytes, self.__scales)
 
-    def __query(self, name):
-        address, dataType, unit = map[name]
-        format = types[dataType]["format"]
-        words = types[dataType]["words"]
-        rawBytes = self.__protocol.query(address, words - 1)
-        unscaled = _unpack(format, rawBytes)
-        scaleMethod = getattr(self, '_scaleFor'+unit)
-        return scaleMethod(unscaled)
-
     def __populate_scales(self):
         if self.__scales != None:
             return
