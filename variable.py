@@ -19,7 +19,7 @@ ADDRESS = 'address'
 TYPE = 'type'
 DESCRIPTION = 'description'
 UNITS = 'units'
-SCALE = 'scale'
+CONVERSION = 'conversion'
 FORMAT = 'format'
 WORDS = 'words'
 
@@ -53,91 +53,91 @@ MAP = {
         ADDRESS: 41519,
         TYPE: "uint",
         UNITS: "Wh",
-        SCALE: "ac_wh",
+        CONVERSION: "ac_wh",
     },
     "CombinedKacoAcPowerHiRes": {
         DESCRIPTION: 'AC Solar Power',
         ADDRESS: 41896,
         TYPE: "uint",
         UNITS: "W",
-        SCALE: "ac_w",
+        CONVERSION: "ac_w",
     },
     "LoadAcPower": {
         DESCRIPTION: 'AC Load Power',
         ADDRESS: 41107,
         TYPE: "uint",
         UNITS: "W",
-        SCALE: "ac_w",
+        CONVERSION: "ac_w",
     },
     "ACLoadkWhTotalAcc": {
         DESCRIPTION: 'AC Lifetime Load Energy',
         ADDRESS: 41438,
         TYPE: "uint",
         UNITS: "Wh",
-        SCALE: "ac_wh",
+        CONVERSION: "ac_wh",
     },
     "BatteryVolts": {
         DESCRIPTION: 'Battery Volts',
         ADDRESS: 0xa05c,
         TYPE: "ushort",
         UNITS: "V",
-        SCALE: "dc_v",
+        CONVERSION: "dc_v",
     },
     "DCBatteryPower": {
         DESCRIPTION: 'Battery Power',
         ADDRESS: 41007,
         TYPE: "int",
         UNITS: "W",
-        SCALE: "dc_w",
+        CONVERSION: "dc_w",
     },
     "Shunt1Power": {
         DESCRIPTION: 'Shunt 1 Power',
         ADDRESS: 0xa088,
         TYPE: "short",
         UNITS: "W",
-        SCALE: "dc_w",
+        CONVERSION: "dc_w",
     },
     "Shunt2Power": {
         DESCRIPTION: 'Shunt 2 Power',
         ADDRESS: 0xa089,
         TYPE: "short",
         UNITS: "W",
-        SCALE: "dc_w",
+        CONVERSION: "dc_w",
     },
     "Shunt1Name": {
         DESCRIPTION: 'Shunt 1 Name',
         ADDRESS: 49417,
         TYPE: "short",
         UNITS: "",
-        SCALE: "shunt_name",
+        CONVERSION: "shunt_name",
     },
     "Shunt2Name": {
         DESCRIPTION: 'Shunt 2 Name',
         ADDRESS: 49418,
         TYPE: "short",
         UNITS: "",
-        SCALE: "shunt_name",
+        CONVERSION: "shunt_name",
     },
     "BatteryTemperature": {
         DESCRIPTION: "Battery Temperature",
         ADDRESS: 0xa03c,
         TYPE: "ushort",
         UNITS: "°C",
-        SCALE: "temperature",
+        CONVERSION: "temperature",
     },
     "BattOutkWhPreviousAcc": {
         DESCRIPTION: "Battery Out Energy Today",
         ADDRESS: 41356,
         TYPE: "uint",
         UNITS: "Wh",
-        SCALE: "dc_wh",
+        CONVERSION: "dc_wh",
     },
     "BattSocPercent": {
         DESCRIPTION: "Battery State of Charge",
         ADDRESS: 41089,
         TYPE: "ushort",
         UNITS: "%",
-        SCALE: "percent",
+        CONVERSION: "percent",
     },
 }
 
@@ -253,9 +253,9 @@ class Variable:
         format = type_info["format"]
         words = type_info[WORDS]
         unscaled = struct.unpack(format, self.__bytes)[0]
-        if not SCALE in mem_info:
+        if not CONVERSION in mem_info:
             return unscaled
-        scaleMethod = getattr(sys.modules[__name__], '_convert_'+mem_info[SCALE])
+        scaleMethod = getattr(sys.modules[__name__], '_convert_'+mem_info[CONVERSION])
         return scaleMethod(unscaled, scales)
 
     def is_known(self):
