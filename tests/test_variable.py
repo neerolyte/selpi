@@ -3,6 +3,7 @@ import variable
 from variable import Variable
 from unittest_data_provider import data_provider
 from error import Error
+from memory_range import Range
 
 scales = {
     'CommonScaleForDcVolts': 1050,
@@ -31,19 +32,18 @@ class VariableTest(TestCase):
     def test_create(self, arg, name, address):
         var = variable.create(arg)
         self.assertIsInstance(var, variable.Variable)
-        self.assertEqual(address, var.get_address())
+        self.assertEqual(address, var.range.address)
         self.assertEqual(name, var.get_name())
 
     @data_provider(lambda: (
-        # (arg, words)
-        ('CommonScaleForDcVolts', 1),
-        ('BattOutkWhPreviousAcc', 2),
-        ('DCBatteryPower', 2),
-        (0xcafe, 1),
-        (0xfeed, 1),
+        ('CommonScaleForDcVolts', Range(41002, 1)),
+        ('BattOutkWhPreviousAcc', Range(41356, 2)),
+        ('DCBatteryPower', Range(41007, 2)),
+        (0xcafe, Range(0xcafe, 1)),
+        (0xfeed, Range(0xfeed, 1)),
     ))
-    def test_get_words(self, arg, words):
-        self.assertEqual(words, variable.create(arg).get_words())
+    def test_range(self, arg, range):
+        self.assertEqual(range, variable.create(arg).range)
 
     @data_provider(lambda: (
         # (arg, type)

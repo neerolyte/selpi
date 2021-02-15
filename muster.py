@@ -16,6 +16,6 @@ class Muster:
     def query(self, variables: list):
         rvariables = []
         for var in variables:
-            response = self.__protocol.query(var.get_address(), var.get_words() - 1)
+            response = self.__protocol.query(var.range.address, var.range.words - 1)
             rvariables.append(var.set_bytes(response))
         return rvariables

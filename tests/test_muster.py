@@ -13,8 +13,10 @@ class MusterTest(TestCase):
             variable.create('CommonScaleForAcVolts'),
             variable.create('CommonScaleForTemperature'),
         ]
+
         rvars = muster.query(ivars)
-        self.assertEqual(2, len(ivars))
+
+        self.assertEqual(2, len(rvars))
         self.assertEqual('CommonScaleForAcVolts', rvars[0].get_name())
         self.assertEqual('CommonScaleForTemperature', rvars[1].get_name())
         self.assertEqual(b'\x12\x34', rvars[0].get_bytes())

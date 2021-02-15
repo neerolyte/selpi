@@ -2,6 +2,7 @@ import struct
 import sys
 from error import Error
 import converter
+from memory_range import Range
 
 def create(arg):
     if type(arg) is str:
@@ -167,17 +168,15 @@ class Variable:
         self.__address = address
         self.__bytes = bytes
 
-    def get_address(self):
-        return self.__address
-
     def get_name(self):
         return self.__name
 
     """
-    Get the number of words this variables takes up in memory
+    Get the memory range for this variable
     """
-    def get_words(self):
-        return TYPES[self.get_type()][WORDS]
+    @property
+    def range(self):
+        return Range(self.__address, TYPES[self.get_type()][WORDS])
 
     def get_type(self):
         if not self.__name in MAP:
