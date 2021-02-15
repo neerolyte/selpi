@@ -1,9 +1,8 @@
 from unittest import TestCase, skip
+from memory import Range
 import variable
 from variable import Variable
 from unittest_data_provider import data_provider
-from error import Error
-from memory_range import Range
 
 scales = {
     'CommonScaleForDcVolts': 1050,
@@ -94,7 +93,7 @@ class VariableTest(TestCase):
 
     def test_get_value_errors(self):
         var = variable.create(0xcafe)
-        with self.assertRaises(Error) as context:
+        with self.assertRaises(Exception) as context:
             var.get_value([])
         self.assertEqual(
             'Can not convert value for unknown variable type',

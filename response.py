@@ -1,7 +1,7 @@
 import struct
 from crc import CRC
 from request import Request
-from error import ValidationError
+from exception import ValidationException
 
 class Response:
     def __init__(self, request: Request):
@@ -25,7 +25,7 @@ class Response:
     def valid(self) -> bool:
         try:
             self.validate()
-        except ValidationError:
+        except ValidationException:
             return False
         return True
 
@@ -38,7 +38,7 @@ class Response:
         expected = self.expected_length()
         if actual == expected:
             return
-        raise ValidationError(
+        raise ValidationException(
             "Incorrect data length (%(actual)i of %(expected)i bytes)"
             % {'actual': actual, 'expected': expected}
         )
@@ -47,7 +47,7 @@ class Response:
         crc = CRC(self.__message)
         if crc.as_int() == 0:
             return
-        raise ValidationError(
+        raise ValidationException(
             "Incorrect CRC (0x%(crc)s)" \
             % { 'crc': crc.as_hex().decode("utf-8") }
         )

@@ -1,8 +1,6 @@
 import struct
-import sys
-from error import Error
 import converter
-from memory_range import Range
+from memory import Range
 
 def create(arg):
     if type(arg) is str:
@@ -199,7 +197,7 @@ class Variable:
     """
     def get_value(self, scales: dict):
         if not self.is_known():
-            raise Error("Can not convert value for unknown variable type")
+            raise Exception("Can not convert value for unknown variable type")
         mem_info = MAP[self.__name]
         type_info = TYPES[self.get_type()]
         format = type_info["format"]
