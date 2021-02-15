@@ -13,19 +13,15 @@ def run(args):
     protocol.login()
     muster = Muster(protocol)
 
-    scale_vars = muster.query([
+    scale_vars = [
         variable.create('CommonScaleForAcVolts'),
         variable.create('CommonScaleForAcCurrent'),
         variable.create('CommonScaleForDcVolts'),
         variable.create('CommonScaleForDcCurrent'),
         variable.create('CommonScaleForTemperature'),
         variable.create('CommonScaleForInternalVoltages'),
-    ])
-    scales = {}
-    for var in scale_vars:
-        scales[var.get_name()] = var.get_value([])
-
-    variables = muster.query([
+    ]
+    variables = [
         variable.create('CombinedKacoAcPowerHiRes'),
         variable.create('Shunt1Name'),
         variable.create('Shunt1Power'),
@@ -38,7 +34,14 @@ def run(args):
         variable.create('ACLoadkWhTotalAcc'),
         variable.create('BattOutkWhPreviousAcc'),
         variable.create('BattSocPercent'),
-    ])
+    ]
+
+    muster.update(scale_vars + variables)
+
+    scales = {}
+    for var in scale_vars:
+        scales[var.get_name()] = var.get_value([])
+
     stats = []
     for var in variables:
         stats.append({

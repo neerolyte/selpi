@@ -10,12 +10,9 @@ class Muster:
         self.__protocol = protocol
 
     """
-    Query the wire protocol for a list of Variables
-    return the same variables with updated values
+    Query the wire protocol for a list of Variables and update the values in the
+    variables
     """
-    def query(self, variables: list):
-        rvariables = []
+    def update(self, variables: list):
         for var in variables:
-            response = self.__protocol.query(var.range.address, var.range.words - 1)
-            rvariables.append(var.set_bytes(response))
-        return rvariables
+            var.bytes = self.__protocol.query(var.range.address, var.range.words - 1)

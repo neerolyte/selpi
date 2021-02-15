@@ -60,12 +60,11 @@ class VariableTest(TestCase):
         ('CommonScaleForDcVolts', b'\x1a\x04', 1050),
         ('BatteryVolts', b'\x41\x44', 55.989532470703125),
     ))
-    def test_set_bytes(self, arg, bytes, value):
+    def test_bytes(self, arg, bytes, value):
         var = variable.create(arg)
-        ovalue = var.get_value(scales)
-        nvar = var.set_bytes(bytes)
-        self.assertEqual(ovalue, var.get_value(scales))
-        self.assertEqual(value, nvar.get_value(scales))
+        var.bytes = bytes
+        self.assertEqual(value, var.get_value(scales))
+        self.assertEqual(bytes, var.bytes)
 
     @data_provider(lambda: (
         ('CommonScaleForDcVolts', b'\x1a\x04', 1050),

@@ -184,13 +184,15 @@ class Variable:
         return MAP[self.__name][TYPE]
 
     """
-    Create a new Varible with the supplied value
+    Set the internal bytes
     """
-    def set_bytes(self, bytes):
-        return Variable(self.__name, self.__address, bytes)
-
-    def get_bytes(self):
+    @property
+    def bytes(self):
         return self.__bytes
+
+    @bytes.setter
+    def bytes(self, bytes):
+        self.__bytes = bytes
 
     """
     Get the converted value
