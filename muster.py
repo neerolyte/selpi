@@ -1,6 +1,6 @@
 from protocol import Protocol
-from memory import extract
-from memory import reduce
+from memory import extract, Data, reduce
+import logging
 
 """
 Muster collects multiple requests for variables, dispatches the queries and
@@ -15,13 +15,13 @@ class Muster:
     variables
     """
     def update(self, variables: list):
-        #for var in variables:
-        #    var.bytes = self.__protocol.query(var.range.address, var.range.words - 1)
-        #return
         ranges = []
+        datas = []
         for var in variables:
             ranges.append(var.range)
         for range in reduce(ranges):
-            response = self.__protocol.query(range.address, range.words - 1)
-            for var in variables:
-                var.bytes = extract(range, var.range, response)
+            logging.debug("query: %s" % range)
+            res = self.__protocol.query(range.address, range.words - 1)
+            datas.append(Data(range, res))
+        for var in variables:
+            var.bytes = extract(var.range, datas).bytes
