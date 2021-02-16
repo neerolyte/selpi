@@ -6,9 +6,12 @@ from . import Range
 Data for a range of memory
 """
 class Data():
-    def __init__(self, range: Range):
+    def __init__(self, range: Range, bytes: bytes=None):
         self.__range = range
-        self.__bytes = None
+        if bytes != None:
+            self.bytes = bytes
+        else:
+            self.__bytes = None
 
     @property
     def range(self):

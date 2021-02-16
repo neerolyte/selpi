@@ -16,11 +16,27 @@ class DataTest(TestCase):
             context.exception.args[0]
         )
 
+    def test_bytes_raises_during_init(self):
+        with self.assertRaises(ValidationException) as context:
+            Data(Range(0x0000, 1), b'1234')
+        self.assertEqual(
+            'Unable to store 4 bytes to range requiring 2',
+            context.exception.args[0]
+        )
+
     @data_provider(lambda: (
         (Range(0xcafe, 1), b'ab'),
         (Range(0xfeed, 5), b'1234567890'),
     ))
-    def test_bytes(self, range: Range, bytes: bytes):
+    def test_bytes_getter(self, range: Range, bytes: bytes):
+        data = Data(range, bytes)
+        self.assertEqual(bytes, data.bytes)
+
+    @data_provider(lambda: (
+        (Range(0xcafe, 1), b'ab'),
+        (Range(0xfeed, 5), b'1234567890'),
+    ))
+    def test_bytes_setter(self, range: Range, bytes: bytes):
         data = Data(range)
         data.bytes = bytes
         self.assertEqual(bytes, data.bytes)
