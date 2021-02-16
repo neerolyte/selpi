@@ -33,3 +33,19 @@ class Data():
                 len(bytes), self.range.words * 2
             )
         )
+
+    def __lt__(self, other):
+        return (
+            isinstance(other, Data)
+            and self.__range < other.__range
+        )
+
+    def __repr__(self):
+        return 'Data(%s, %s)' % (self.__range, self.__bytes)
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, Data)
+            and self.__range == other.__range
+            and self.__bytes == other.__bytes
+        )

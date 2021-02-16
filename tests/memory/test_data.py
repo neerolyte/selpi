@@ -50,3 +50,18 @@ class DataTest(TestCase):
         with self.assertRaises(ValidationException) as context:
             data.bytes = bytes
         self.assertEqual(expected, context.exception.args[0])
+
+    def test_sorted(self):
+        datas = [
+            Data(Range(0x1234, 1), b'zz'),
+            Data(Range(0x9999, 2), b'aaaa'),
+            Data(Range(0x0000, 1), b'mm'),
+            Data(Range(0x4567, 1), b'aa'),
+        ]
+        self.maxDiff = None
+        self.assertEqual([
+            Data(Range(0x0000, 1), b'mm'),
+            Data(Range(0x1234, 1), b'zz'),
+            Data(Range(0x4567, 1), b'aa'),
+            Data(Range(0x9999, 2), b'aaaa'),
+        ], sorted(datas))
