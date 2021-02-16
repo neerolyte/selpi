@@ -20,4 +20,3 @@ class ExtractTest(TestCase):
             '%s is outside of %s' % (needle, haystack),
             context.exception.args[0]
         )
-        # TODO: what happens if the needle is not in the haystack?
