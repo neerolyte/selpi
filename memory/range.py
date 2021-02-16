@@ -2,6 +2,9 @@
 import struct
 import binascii
 
+"""
+Describe a range of memory
+"""
 class Range():
     def __init__(self, address: int, words: int):
         self.__address = address
