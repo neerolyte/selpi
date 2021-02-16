@@ -1,7 +1,7 @@
 from unittest import TestCase
 from response import Response
 from request import Request
-from error import ValidationError
+from exception import ValidationException
 
 class TestResponse(TestCase):
     def test_expected_length_0(self):
@@ -37,7 +37,7 @@ class TestResponse(TestCase):
         res_msg.extend(b'\x03\x04')
         res.set_message(res_msg)
         response = b'12345678901234567890123456'
-        with self.assertRaises(ValidationError) as context:
+        with self.assertRaises(ValidationException) as context:
             res.validate()
         self.assertEqual(
             'Incorrect CRC (0x4fc5)',

@@ -23,4 +23,4 @@ jobs:
         pipenv install
     - name: Test
       run: |
-        pipenv run tests
+        pipenv run tests --verbose

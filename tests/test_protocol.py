@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, call
 from protocol import Protocol
 from connection import Connection
 from crc import CRC
-from error import ValidationError
+from exception import ValidationException
 
 from tests.examples import protocol as examples
 
@@ -31,7 +31,7 @@ class ProtocolTest(TestCase):
 
     def test_query_short_response(self):
         protocol = Protocol(mock_connection(b'123456'))
-        with self.assertRaises(ValidationError) as context:
+        with self.assertRaises(ValidationException) as context:
             protocol.query(0xa000, 8)
         self.assertEqual(
             'Incorrect data length (6 of 28 bytes)',
@@ -41,7 +41,7 @@ class ProtocolTest(TestCase):
     def test_query_invalid_crc_response(self):
         response = b'12345678901234567890123456'
         protocol = Protocol(mock_connection(response))
-        with self.assertRaises(ValidationError) as context:
+        with self.assertRaises(ValidationException) as context:
             protocol.query(0xa000, 7)
         self.assertEqual(
             'Incorrect CRC (0x958a)',
