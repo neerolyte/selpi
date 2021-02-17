@@ -57,7 +57,7 @@ MAP = {
     },
     "CombinedKacoAcPowerHiRes": {
         DESCRIPTION: 'AC Solar Power',
-        ADDRESS: 41896,
+        ADDRESS: 0xa3a8,
         TYPE: "uint",
         UNITS: "W",
         CONVERSION: "ac_w",
@@ -85,7 +85,7 @@ MAP = {
     },
     "DCBatteryPower": {
         DESCRIPTION: 'Battery Power',
-        ADDRESS: 41007,
+        ADDRESS: 0xa02f,
         TYPE: "int",
         UNITS: "W",
         CONVERSION: "dc_w",
@@ -106,14 +106,14 @@ MAP = {
     },
     "Shunt1Name": {
         DESCRIPTION: 'Shunt 1 Name',
-        ADDRESS: 49417,
+        ADDRESS: 0xc109,
         TYPE: "short",
         UNITS: "",
         CONVERSION: "shunt_name",
     },
     "Shunt2Name": {
         DESCRIPTION: 'Shunt 2 Name',
-        ADDRESS: 49418,
+        ADDRESS: 0xc10a,
         TYPE: "short",
         UNITS: "",
         CONVERSION: "shunt_name",
@@ -127,7 +127,7 @@ MAP = {
     },
     "BattOutkWhPreviousAcc": {
         DESCRIPTION: "Battery Out Energy Today",
-        ADDRESS: 41356,
+        ADDRESS: 0xa18c,
         TYPE: "uint",
         UNITS: "Wh",
         CONVERSION: "dc_wh",
