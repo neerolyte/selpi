@@ -1,3 +1,4 @@
+from .crc import CRC
 from .range import Range
 from .reduce import reduce
 from .data import Data

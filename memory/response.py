@@ -1,4 +1,4 @@
-from crc import CRC
+from . import CRC
 from . import Request
 from exception import ValidationException
 
