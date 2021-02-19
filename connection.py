@@ -50,26 +50,13 @@ class ConnectionSerial(Connection):
             timeout = 0.1
         )
         self.__port.flushOutput()
-        self.__buf = bytearray()
 
     def _write(self, data: bytes):
         self.__port.write(data)
         self.__port.flushOutput()
 
     def _read(self, length: int) -> bytes:
-        attempts = 3
-        while len(self.__buf) < length:
-            remaining = length - len(self.__buf)
-            read = self.__port.read(remaining)
-            self.__buf.extend(read)
-            # if we don't receive anything a few times in a row, fail
-            if len(read) == 0:
-                attempts = attempts -1
-            if attempts <= 0:
-                raise BufferError()
-        buf = self.__buf[0:length]
-        self.__buf = self.__buf[length:]
-        return buf
+        return self.__port.read(length)
 
 
 class ConnectionSelectLive(Connection):

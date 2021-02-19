@@ -7,7 +7,7 @@ from exception import ValidationException
 class ProtocolTest(TestCase):
     def test_query_hello(self):
         connection = create_autospec(Connection)
-        connection.read.return_value=b'\x51\x00\x00\xa0\x00\x00\x9d\x4b\x01\x00\xd8\x19'
+        connection.read.return_value = b'\x51\x00\x00\xa0\x00\x00\x9d\x4b\x01\x00\xd8\x19'
         protocol = Protocol(connection)
         self.assertEqual(b'\x01\0', protocol.query(Range(0xa000, 1)))
         connection.write.assert_called_once_with(b'\x51\x00\x00\xa0\x00\x00\x9d\x4b')
@@ -26,12 +26,14 @@ class ProtocolTest(TestCase):
 
     def test_query_short_response(self):
         connection = create_autospec(Connection)
-        connection.read.return_value = b'123456'
+        connection.read.side_effect = [
+            b'123456', b'', b'', b'', b'', b'', b'', b'', b'', b'', b'',
+        ]
         protocol = Protocol(connection)
-        with self.assertRaises(ValidationException) as context:
+        with self.assertRaises(BufferError) as context:
             protocol.query(Range(0xa000, 9))
         self.assertEqual(
-            'Incorrect data length (6 of 28 bytes)',
+            'Expected 28 bytes, but only able to read 6',
             context.exception.args[0]
         )
 
@@ -114,4 +116,19 @@ class ProtocolTest(TestCase):
             call(login_challenge),
             call(login_status_sent),
         ])
+
+    def test_read_retry(self):
+        connection = create_autospec(Connection)
+        connection.read.side_effect = [
+            b'\x51', b'\x00\x00', b'\xa0', b'\x00', b'\x00',
+            b'\x9d\x4b\x01\x00', b'\xd8', b'\x19',
+        ]
+        protocol = Protocol(connection)
+        self.assertEqual(b'\x01\0', protocol.query(Range(0xa000, 1)))
+        connection.read.assert_has_calls([
+            call(12), call(11), call(9), call(8),
+            call(7), call(6), call(2), call(1),
+        ])
+        connection.write.assert_called_once_with(b'\x51\x00\x00\xa0\x00\x00\x9d\x4b')
+
 

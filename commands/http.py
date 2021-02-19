@@ -38,7 +38,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         stats = []
         variables = [
-            #variable.create('CombinedKacoAcPowerHiRes'),
+            variable.create('CombinedKacoAcPowerHiRes'),
             #variable.create('Shunt1Name'),
             variable.create('Shunt1Power'),
             #variable.create('Shunt2Name'),

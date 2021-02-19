@@ -11,6 +11,7 @@ class Protocol:
     def __init__(self, connection: Connection, password: bytes=None):
         self.__connection = connection
         self.__password = password or os.getenvb(b'SELPI_SPPRO_PASSWORD')
+        self.__read_buffer = bytearray()
 
     """
     Request memory from the SP Pro
@@ -32,9 +33,24 @@ class Protocol:
     def __send(self, request: Request) -> Response:
         self.__connection.write(request.get_message())
         res = Response(request)
-        message = self.__connection.read(res.expected_length())
+        message = self.__read(res.expected_length())
         res.set_message(message)
         return res
+
+    def __read(self, length: int) -> bytes:
+        empty_attempts = 0
+        while len(self.__read_buffer) < length:
+            remaining = length - len(self.__read_buffer)
+            read = self.__connection.read(remaining)
+            self.__read_buffer.extend(read)
+            # if we don't receive anything a few times in a row, fail
+            if len(read) == 0:
+                empty_attempts = empty_attempts + 1
+            if empty_attempts >= 3:
+                raise BufferError("Expected %s bytes, but only able to read %s" % (length, len(self.__read_buffer)))
+        buf = self.__read_buffer[0:length]
+        self.__read_buffer = self.__read_buffer[length:]
+        return buf
 
     def login(self):
         # Get data from SP Pro to combine with password and hash
