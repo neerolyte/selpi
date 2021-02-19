@@ -17,7 +17,7 @@ class Protocol:
     """
     def query(self, range: Range) -> Data:
         req = Request.create_query(range.address, range.words - 1)
-        res = self.send(req)
+        res = self.__send(req)
         return res.memory()
 
     """
@@ -25,11 +25,11 @@ class Protocol:
     """
     def write(self, address: int, data: bytes):
         request = Request.create_write(address, data)
-        response = self.send(request)
+        response = self.__send(request)
         if not request.get_message() == response.get_message():
             raise Exception("Write check failed, expected '%s' got '%s" % (request.get_message(), response.get_message()))
 
-    def send(self, request: Request) -> Response:
+    def __send(self, request: Request) -> Response:
         self.__connection.write(request.get_message())
         res = Response(request)
         message = self.__connection.read(res.expected_length())
