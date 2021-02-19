@@ -1,37 +1,33 @@
 from unittest import TestCase, skip
-from unittest.mock import MagicMock, call
-from memory import Protocol, Range
+from unittest.mock import call, create_autospec
+from memory import Protocol, Range, Request
 from connection import Connection
 from exception import ValidationException
 
-from tests.examples import protocol as examples
-
-def mock_connection(data: bytes):
-    connection = Connection()
-    connection.read = MagicMock(return_value = data)
-    connection.write = MagicMock()
-    return connection
-
 class ProtocolTest(TestCase):
     def test_query_hello(self):
-        example = examples.get('hello')
-        connection = mock_connection(example.get('read'))
+        connection = create_autospec(Connection)
+        connection.read.return_value=b'\x51\x00\x00\xa0\x00\x00\x9d\x4b\x01\x00\xd8\x19'
         protocol = Protocol(connection)
         self.assertEqual(b'\x01\0', protocol.query(Range(0xa000, 1)))
-        connection.write.assert_called_once_with(example.get('sent'))
+        connection.write.assert_called_once_with(b'\x51\x00\x00\xa0\x00\x00\x9d\x4b')
 
-    def test_query_auth_init_0(self):
-        example = examples.get('auth_init_0')
-        connection = mock_connection(example.get('read'))
+    def test_query_hash(self):
+        sent = b'Q\x07\x00\x00\x1f\x00\xcfb'
+        read = b"Q\x07\x00\x00\x1f\x00\xcfbz\xb2\x9f\xdeh\x1a\xe0\xb1\'\'\x08\x8f\x80\xc4\xba\x8b\xa0@"
+        connection = create_autospec(Connection)
+        connection.read.return_value = read
         protocol = Protocol(connection)
         self.assertEqual(
             b'z\xb2\x9f\xdeh\x1a\xe0\xb1\'\'\x08\x8f\x80\xc4\xba\x8b',
             protocol.query(Range(0x1f0000, 8))
         )
-        connection.write.assert_called_once_with(example.get('sent'))
+        connection.write.assert_called_once_with(sent)
 
     def test_query_short_response(self):
-        protocol = Protocol(mock_connection(b'123456'))
+        connection = create_autospec(Connection)
+        connection.read.return_value = b'123456'
+        protocol = Protocol(connection)
         with self.assertRaises(ValidationException) as context:
             protocol.query(Range(0xa000, 9))
         self.assertEqual(
@@ -41,7 +37,9 @@ class ProtocolTest(TestCase):
 
     def test_query_invalid_crc_response(self):
         response = b'12345678901234567890123456'
-        protocol = Protocol(mock_connection(response))
+        connection = create_autospec(Connection)
+        connection.read.return_value = response
+        protocol = Protocol(connection)
         with self.assertRaises(ValidationException) as context:
             protocol.query(Range(0xa000, 8))
         self.assertEqual(
@@ -49,28 +47,71 @@ class ProtocolTest(TestCase):
             context.exception.args[0]
         )
 
-    def test_login_auth_0(self):
-        init = examples.get('auth_init_0')
-        login = examples.get('auth_login_0')
-        connection = Connection()
-        connection.read = MagicMock(side_effect = [
-            init.get('read'),
-            login.get('read')
-        ])
-        connection.write = MagicMock()
-        protocol = Protocol(connection)
+    def test_login_default_password(self):
+        password = b"Selectronic SP PRO"
+        login_hash_sent = b'Q\x07\x00\x00\x1f\x00\xcfb'
+        login_hash_read = b"Q\x07\x00\x00\x1f\x00\xcfbz\xb2\x9f\xdeh\x1a\xe0\xb1\'\'\x08\x8f\x80\xc4\xba\x8b\xa0@"
+        login_challenge = b'W\x07\x00\x00\x1f\x005z\xb6\xd16\x04\x08\x0c\x87\xce\x81\xc1\x82\xc6o\xa5\xfb5w\xaa'
+        login_status_sent = b'Q\x00\x10\x00\x1f\x00\xb2\x91'
+        login_status_read = b'Q\x00\x10\x00\x1f\x00\xb2\x91\x01\x00\xd8\x19'
+        connection = create_autospec(Connection)
+        connection.read.side_effect = [
+            login_hash_read,
+            login_challenge,
+            login_status_read,
+        ]
+        protocol = Protocol(connection, password)
         protocol.login()
-        calls = connection.write.call_args_list
         connection.write.assert_has_calls([
-            call(init.get('sent')),
-            call(login.get('sent')),
+            call(login_hash_sent),
+            call(login_challenge),
+            call(login_status_sent),
         ])
 
-    @skip("TODO")
     def test_login_failed(self):
-        pass
+        password = b"Selectronic SP PRO"
+        login_hash_sent = b'Q\x07\x00\x00\x1f\x00\xcfb'
+        login_hash_read = b"Q\x07\x00\x00\x1f\x00\xcfbz\xb2\x9f\xdeh\x1a\xe0\xb1\'\'\x08\x8f\x80\xc4\xba\x8b\xa0@"
+        login_challenge = b'W\x07\x00\x00\x1f\x005z\xb6\xd16\x04\x08\x0c\x87\xce\x81\xc1\x82\xc6o\xa5\xfb5w\xaa'
+        login_status_sent = b'Q\x00\x10\x00\x1f\x00\xb2\x91'
+        login_status_read = b'Q\x00\x10\x00\x1f\x00\xb2\x91\x00\x00\x00\x00'
+        connection = create_autospec(Connection)
+        connection.read.side_effect = [
+            login_hash_read,
+            login_challenge,
+            login_status_read,
+        ]
+        protocol = Protocol(connection, password)
+        with self.assertRaises(ValidationException) as context:
+            protocol.login()
+        self.assertEqual(
+            'Login failed',
+            context.exception.args[0]
+        )
+        connection.write.assert_has_calls([
+            call(login_hash_sent),
+            call(login_challenge),
+            call(login_status_sent),
+        ])
 
-    @skip("TODO")
     def test_login_alternative_password(self):
-        pass
+        password = b"foo"
+        login_hash_sent = b'Q\x07\x00\x00\x1f\x00\xcfb'
+        login_hash_read = b'Q\x07\x00\x00\x1f\x00\xcfb\xb7\n\xd7\x15\xab\xccl;{\x96\xf3\x98\xf0z\xbf\x12\x02E'
+        login_challenge = b'W\x07\x00\x00\x1f\x005z\xa2\xf1\xdf\xfd\xbaA\xa1\xedD\x12\x82\xe7O\x8d\x15_\xc0\x8b'
+        login_status_sent = b'Q\x00\x10\x00\x1f\x00\xb2\x91'
+        login_status_read = b'Q\x00\x10\x00\x1f\x00\xb2\x91\x01\x00\xd8\x19'
+        connection = create_autospec(Connection)
+        connection.read.side_effect = [
+            login_hash_read,
+            login_challenge,
+            login_status_read,
+        ]
+        protocol = Protocol(connection, password)
+        protocol.login()
+        connection.write.assert_has_calls([
+            call(login_hash_sent),
+            call(login_challenge),
+            call(login_status_sent),
+        ])
 

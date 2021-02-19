@@ -1,13 +1,16 @@
+from exception import ValidationException
 import struct
 from connection import Connection
 from . import Response
 from . import Request
 from . import Range, Data
 import hashlib
+import os
 
 class Protocol:
-    def __init__(self, connection: Connection):
+    def __init__(self, connection: Connection, password: bytes=None):
         self.__connection = connection
+        self.__password = password or os.getenvb(b'SELPI_SPPRO_PASSWORD')
 
     """
     Request memory from the SP Pro
@@ -24,7 +27,7 @@ class Protocol:
         request = Request.create_write(address, data)
         response = self.send(request)
         if not request.get_message() == response.get_message():
-            raise Exception("todo: write check failed?")
+            raise Exception("Write check failed, expected '%s' got '%s" % (request.get_message(), response.get_message()))
 
     def send(self, request: Request) -> Response:
         self.__connection.write(request.get_message())
@@ -38,7 +41,8 @@ class Protocol:
         data = bytearray(self.query(Range(0x1f0000, 8)))
 
         # Compute MD5 hash to send back, including login password
-        data.extend("Selectronic SP PRO".ljust(32).encode("ascii"))
+        padded_password = self.__password.ljust(32)
+        data.extend(padded_password)
 
         # Compute md5
         md5 = bytearray(hashlib.md5(data).digest())
@@ -57,3 +61,7 @@ class Protocol:
 
         # respond with hash/pwd MD5
         self.write(0x1f0000, ba)
+
+        login_status = struct.unpack('<H', self.query(Range(0x1f0010, 1)))[0]
+        if login_status != 1:
+            raise ValidationException("Login failed")

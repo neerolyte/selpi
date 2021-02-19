@@ -139,6 +139,14 @@ MAP = {
         UNITS: "%",
         CONVERSION: "percent",
     },
+    "LoginHash": {
+        ADDRESS: 0x1f0000,
+        TYPE: ""
+    },
+    "LoginStatus": {
+        ADDRESS: 0x1f0010,
+        TYPE: "ushort"
+    },
 }
 
 TYPES = {
