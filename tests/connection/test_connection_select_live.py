@@ -1,6 +1,10 @@
 from unittest import TestCase, skip
 
 class CreateTest(TestCase):
+    @skip("todo - confirm LOGIN, OK, etc get checked")
+    def test_authentication(self):
+        pass
+
     @skip("todo")
     def test_write_when_ssl_socket_closed(self):
         pass
