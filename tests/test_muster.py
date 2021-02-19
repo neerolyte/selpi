@@ -2,8 +2,7 @@ from unittest import TestCase, skip
 from unittest.mock import call, create_autospec
 from muster import Muster
 from unittest_data_provider import data_provider
-import variable
-from memory import Protocol, Range
+from memory import Protocol, Range, variable
 
 class MusterTest(TestCase):
     def test_update(self):

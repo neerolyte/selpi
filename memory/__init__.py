@@ -5,3 +5,5 @@ from .extract import extract
 from .request import Request
 from .response import Response
 from .protocol import Protocol
+from .converter import convert
+from .variable import Variable

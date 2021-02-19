@@ -3,7 +3,7 @@ import json
 from memory import Protocol
 import connection
 from muster import Muster
-import variable
+from memory import variable
 import settings
 
 protocol = Protocol(connection.create())

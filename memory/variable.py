@@ -1,5 +1,5 @@
 import struct
-import converter
+from memory import convert
 from memory import Range
 
 def create(arg):
@@ -204,7 +204,7 @@ class Variable:
         unscaled = struct.unpack(format, self.__bytes)[0]
         if not CONVERSION in mem_info:
             return unscaled
-        return converter.convert(mem_info[CONVERSION], unscaled, scales)
+        return convert(mem_info[CONVERSION], unscaled, scales)
 
     def is_known(self):
         return self.__name in MAP

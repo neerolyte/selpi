@@ -1,7 +1,6 @@
 from unittest import TestCase, skip
 from memory import Range
-import variable
-from variable import Variable
+from memory import Variable, variable
 from unittest_data_provider import data_provider
 
 scales = {
@@ -30,7 +29,7 @@ class VariableTest(TestCase):
     ))
     def test_create(self, arg, name, address):
         var = variable.create(arg)
-        self.assertIsInstance(var, variable.Variable)
+        self.assertIsInstance(var, Variable)
         self.assertEqual(address, var.range.address)
         self.assertEqual(name, var.get_name())
 

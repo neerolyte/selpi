@@ -2,7 +2,7 @@ import json
 import connection
 from memory import Protocol
 from muster import Muster
-import variable
+from memory import variable
 
 def add_parser(subparsers):
     parser = subparsers.add_parser('stat', help='show known stats')

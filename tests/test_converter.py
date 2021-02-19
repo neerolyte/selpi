@@ -1,5 +1,5 @@
-from unittest import TestCase, skip
-from converter import convert
+from unittest import TestCase
+from memory import convert
 from unittest_data_provider import data_provider
 
 scales = {
