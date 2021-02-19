@@ -1,13 +1,61 @@
 from unittest import TestCase, skip
+from unittest.mock import create_autospec, call
+from connection import ConnectionSelectLive, ssl
+from ssl import SSLSocket
 
 class CreateTest(TestCase):
-    @skip("todo - confirm LOGIN, OK, etc get checked")
-    def test_authentication(self):
+    def test_connect_success(self):
+        create_ssl_connection = create_autospec(ssl.create_ssl_connection)
+        ssl_socket = create_autospec(SSLSocket)
+        username = b'foo'
+        password = b'bar'
+        device = b'1234567'
+        connection = ConnectionSelectLive(
+            create_ssl_connection_function=create_ssl_connection,
+            username=username,
+            password=password,
+            device=device
+        )
+        create_ssl_connection.side_effect = [ssl_socket]
+        ssl_socket.read.side_effect = [
+            b'LOGIN\r\n',
+            b'OK\r\n',
+            b'OK\r\n',
+        ]
+
+        connection.connect()
+
+        create_ssl_connection.assert_has_calls([
+            call(b'select.live', 7528)
+        ])
+        ssl_socket.write.assert_has_calls([
+            call(b'USER:foo:bar\r\n'),
+            call(b'CONNECT:1234567\r\n'),
+        ])
+        ssl_socket.read.assert_has_calls([
+            call(1024), call(1024), call(1024)
+        ])
+
+    @skip("todo - LOGIN line wrong")
+    @skip("todo - OKs messed up")
+    def test_connect_failures(self):
         pass
 
     @skip("todo")
     def test_write_when_ssl_socket_closed(self):
-        pass
+        create_ssl_connection = create_autospec(ssl.create_ssl_connection)
+        ssl_socket = create_autospec(SSLSocket)
+        connection = ConnectionSelectLive(create_ssl_connection_function=create_ssl_connection)
+        create_ssl_connection.side_effect = [ssl_socket]
+        ssl_socket.read.side_effect = [
+            b'LOGIN\r\n'
+        ]
+
+        connection.connect()
+
+        create_ssl_connection.assert_has_calls([
+            call(b'select.live', 7528)
+        ])
 
 """
 ----------------------------------------
