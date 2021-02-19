@@ -1,10 +1,9 @@
 import settings
 import os
 import connection
-from protocol import Protocol
-import struct
+from memory import Protocol
 import socket
-from request import Request
+from memory import Request
 import logging
 
 def add_parser(subparsers):

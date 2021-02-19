@@ -1,8 +1,8 @@
 import struct
-from crc import CRC
 from connection import Connection
-from response import Response
-from request import Request
+from . import Response
+from . import Request
+from . import Range, Data
 import hashlib
 
 class Protocol:
@@ -12,8 +12,8 @@ class Protocol:
     """
     Request memory from the SP Pro
     """
-    def query(self, address: int, length: int) -> bytes:
-        req = Request.create_query(address, length)
+    def query(self, range: Range) -> Data:
+        req = Request.create_query(range.address, range.words - 1)
         res = self.send(req)
         return res.memory()
 
@@ -35,7 +35,7 @@ class Protocol:
 
     def login(self):
         # Get data from SP Pro to combine with password and hash
-        data = bytearray(self.query(0x1f0000, 7))
+        data = bytearray(self.query(Range(0x1f0000, 8)))
 
         # Compute MD5 hash to send back, including login password
         data.extend("Selectronic SP PRO".ljust(32).encode("ascii"))

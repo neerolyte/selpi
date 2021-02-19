@@ -1,8 +1,7 @@
 from unittest import TestCase, skip
 from unittest.mock import MagicMock, call
-from protocol import Protocol
+from memory import Protocol, Range
 from connection import Connection
-from crc import CRC
 from exception import ValidationException
 
 from tests.examples import protocol as examples
@@ -18,21 +17,23 @@ class ProtocolTest(TestCase):
         example = examples.get('hello')
         connection = mock_connection(example.get('read'))
         protocol = Protocol(connection)
-        self.assertEqual(b'\x01\0', protocol.query(0xa000, 0))
+        self.assertEqual(b'\x01\0', protocol.query(Range(0xa000, 1)))
         connection.write.assert_called_once_with(example.get('sent'))
 
     def test_query_auth_init_0(self):
         example = examples.get('auth_init_0')
         connection = mock_connection(example.get('read'))
         protocol = Protocol(connection)
-        self.assertEqual(b'z\xb2\x9f\xdeh\x1a\xe0\xb1\'\'\x08\x8f\x80\xc4\xba\x8b', protocol.query(0x1f0000, 7))
+        self.assertEqual(
+            b'z\xb2\x9f\xdeh\x1a\xe0\xb1\'\'\x08\x8f\x80\xc4\xba\x8b',
+            protocol.query(Range(0x1f0000, 8))
+        )
         connection.write.assert_called_once_with(example.get('sent'))
-
 
     def test_query_short_response(self):
         protocol = Protocol(mock_connection(b'123456'))
         with self.assertRaises(ValidationException) as context:
-            protocol.query(0xa000, 8)
+            protocol.query(Range(0xa000, 9))
         self.assertEqual(
             'Incorrect data length (6 of 28 bytes)',
             context.exception.args[0]
@@ -42,7 +43,7 @@ class ProtocolTest(TestCase):
         response = b'12345678901234567890123456'
         protocol = Protocol(mock_connection(response))
         with self.assertRaises(ValidationException) as context:
-            protocol.query(0xa000, 7)
+            protocol.query(Range(0xa000, 8))
         self.assertEqual(
             'Incorrect CRC (0x958a)',
             context.exception.args[0]

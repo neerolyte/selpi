@@ -1,7 +1,6 @@
-import struct, hashlib, binascii
-from crc import CRC
+import struct,  binascii
 import connection
-from protocol import Protocol
+from memory import Protocol
 
 def add_parser(subparsers):
     parser = subparsers.add_parser('dump', help='dump memory to stdout')

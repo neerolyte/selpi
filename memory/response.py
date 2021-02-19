@@ -1,6 +1,5 @@
-import struct
 from crc import CRC
-from request import Request
+from . import Request
 from exception import ValidationException
 
 class Response:
@@ -15,7 +14,6 @@ class Response:
         req = self.__request
         msg = req.get_message()
         type_ = chr(msg[0])
-        word_length = msg[1]
         if type_ == 'Q':
             return len(req.get_message()) + req.get_word_length() * 2 + 2
         if type_ == 'W':

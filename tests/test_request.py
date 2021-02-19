@@ -1,8 +1,5 @@
 from unittest import TestCase
-from unittest.mock import MagicMock
-import request
-from request import Request
-from response import Response
+from memory import Request
 from tests.examples import protocol as examples
 
 class TestRequest(TestCase):

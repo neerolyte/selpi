@@ -1,6 +1,6 @@
 import json
 import connection
-from protocol import Protocol
+from memory import Protocol
 from muster import Muster
 import variable
 

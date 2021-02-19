@@ -1,4 +1,4 @@
-from protocol import Protocol
+from memory import Protocol
 from memory import extract, Data, reduce
 import logging
 
@@ -21,7 +21,7 @@ class Muster:
             ranges.append(var.range)
         for range in reduce(ranges):
             logging.debug("query: %s" % range)
-            res = self.__protocol.query(range.address, range.words - 1)
+            res = self.__protocol.query(range)
             datas.append(Data(range, res))
         for var in variables:
             var.bytes = extract(var.range, datas).bytes
