@@ -8,16 +8,11 @@ class ConnectionSelectLive(Connection):
     def __init__(
             self,
             create_ssl_connection_function: create_ssl_connection=None,
-            username: bytes=None,
-            password: bytes=None,
-            device: bytes=None
-
+            settings_module: settings=None
     ):
         super().__init__()
         self.__create_ssl_connection = create_ssl_connection_function or create_ssl_connection
-        self.__username = username or settings.getb(b'CONNECTION_SELECT_LIVE_USERNAME')
-        self.__password = password or settings.getb(b'CONNECTION_SELECT_LIVE_PASSWORD')
-        self.__device = device or settings.getb(b'CONNECTION_SELECT_LIVE_DEVICE')
+        self.__settings_module = settings_module or settings
         self.__socket = None
         self.__write_failures = 0
 
@@ -32,7 +27,9 @@ class ConnectionSelectLive(Connection):
                 "Authentication failed, 'LOGIN' prompt was missing, received %s instead"
                 % response
             )
-        self._write(b'USER:'+self.__username+b':'+self.__password+b'\r\n')
+        username = self.__settings_module.getb(b'CONNECTION_SELECT_LIVE_USERNAME')
+        password = self.__settings_module.getb(b'CONNECTION_SELECT_LIVE_PASSWORD')
+        self._write(b'USER:'+username+b':'+password+b'\r\n')
         response = self._read(1024)
         if response != b'OK\r\n':
             raise ValidationException(
@@ -40,7 +37,8 @@ class ConnectionSelectLive(Connection):
                 % response
             )
 
-        self._write(b'CONNECT:'+self.__device+b'\r\n')
+        device = self.__settings_module.getb(b'CONNECTION_SELECT_LIVE_DEVICE')
+        self._write(b'CONNECT:'+device+b'\r\n')
         response = self._read(1024)
         if response != b'READY\r\n':
             raise ValidationException(

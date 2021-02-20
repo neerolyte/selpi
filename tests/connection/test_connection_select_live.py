@@ -3,19 +3,23 @@ from unittest.mock import create_autospec, call
 from connection import ConnectionSelectLive, ssl
 from ssl import SSLSocket, SSLZeroReturnError
 from exception import ValidationException
+import settings
 
 class CreateTest(TestCase):
     def test_connect_success(self):
         create_ssl_connection = create_autospec(ssl.create_ssl_connection)
         ssl_socket = create_autospec(SSLSocket)
-        username = b'foo'
-        password = b'bar'
-        device = b'1234567'
+        settings_module = create_autospec(settings)
+        settings_module.getb.side_effect = (lambda key:
+            {
+                b'CONNECTION_SELECT_LIVE_USERNAME': b'foo',
+                b'CONNECTION_SELECT_LIVE_PASSWORD': b'bar',
+                b'CONNECTION_SELECT_LIVE_DEVICE': b'1234567',
+            }[key]
+        )
         connection = ConnectionSelectLive(
             create_ssl_connection_function=create_ssl_connection,
-            username=username,
-            password=password,
-            device=device
+            settings_module=settings_module
         )
         create_ssl_connection.side_effect = [ssl_socket]
         ssl_socket.read.side_effect = [
@@ -40,12 +44,16 @@ class CreateTest(TestCase):
     def test_connect_failure_bad_login_line(self):
         create_ssl_connection = create_autospec(ssl.create_ssl_connection)
         ssl_socket = create_autospec(SSLSocket)
-        username = b'foo'
-        password = b'bar'
+        settings_module = create_autospec(settings)
+        settings_module.getb.side_effect = (lambda key:
+            {
+                b'CONNECTION_SELECT_LIVE_USERNAME': b'foo',
+                b'CONNECTION_SELECT_LIVE_PASSWORD': b'bar',
+            }[key]
+        )
         connection = ConnectionSelectLive(
             create_ssl_connection_function=create_ssl_connection,
-            username=username,
-            password=password
+            settings_module=settings_module
         )
         create_ssl_connection.side_effect = [ssl_socket]
         ssl_socket.read.side_effect = [
@@ -68,12 +76,16 @@ class CreateTest(TestCase):
     def test_connect_failure_bad_user_ok(self):
         create_ssl_connection = create_autospec(ssl.create_ssl_connection)
         ssl_socket = create_autospec(SSLSocket)
-        username = b'foo'
-        password = b'bar'
+        settings_module = create_autospec(settings)
+        settings_module.getb.side_effect = (lambda key:
+            {
+                b'CONNECTION_SELECT_LIVE_USERNAME': b'foo',
+                b'CONNECTION_SELECT_LIVE_PASSWORD': b'bar',
+            }[key]
+        )
         connection = ConnectionSelectLive(
             create_ssl_connection_function=create_ssl_connection,
-            username=username,
-            password=password
+            settings_module=settings_module
         )
         create_ssl_connection.side_effect = [ssl_socket]
         ssl_socket.read.side_effect = [
@@ -97,14 +109,17 @@ class CreateTest(TestCase):
     def test_connect_failure_bad_device_ok(self):
         create_ssl_connection = create_autospec(ssl.create_ssl_connection)
         ssl_socket = create_autospec(SSLSocket)
-        username = b'foo'
-        password = b'bar'
-        device = b'1234567'
+        settings_module = create_autospec(settings)
+        settings_module.getb.side_effect = (lambda key:
+            {
+                b'CONNECTION_SELECT_LIVE_USERNAME': b'foo',
+                b'CONNECTION_SELECT_LIVE_PASSWORD': b'bar',
+                b'CONNECTION_SELECT_LIVE_DEVICE': b'1234567',
+            }[key]
+        )
         connection = ConnectionSelectLive(
             create_ssl_connection_function=create_ssl_connection,
-            username=username,
-            password=password,
-            device=device
+            settings_module=settings_module
         )
         create_ssl_connection.side_effect = [ssl_socket]
         ssl_socket.read.side_effect = [
@@ -133,14 +148,17 @@ class CreateTest(TestCase):
         create_ssl_connection = create_autospec(ssl.create_ssl_connection)
         ssl_socket_a = create_autospec(SSLSocket)
         ssl_socket_b = create_autospec(SSLSocket)
-        username = b'foo'
-        password = b'bar'
-        device = b'1234567'
+        settings_module = create_autospec(settings)
+        settings_module.getb.side_effect = (lambda key:
+            {
+                b'CONNECTION_SELECT_LIVE_USERNAME': b'foo',
+                b'CONNECTION_SELECT_LIVE_PASSWORD': b'bar',
+                b'CONNECTION_SELECT_LIVE_DEVICE': b'1234567',
+            }[key]
+        )
         connection = ConnectionSelectLive(
             create_ssl_connection_function=create_ssl_connection,
-            username=username,
-            password=password,
-            device=device
+            settings_module=settings_module
         )
         create_ssl_connection.side_effect = [ssl_socket_a, ssl_socket_b]
         ssl_socket_a.read.side_effect = [
