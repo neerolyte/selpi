@@ -1,6 +1,6 @@
 import struct,  binascii
 import connection
-from memory import Protocol
+from memory import Protocol, Range
 
 def add_parser(subparsers):
     parser = subparsers.add_parser('dump', help='dump memory to stdout')
@@ -19,5 +19,5 @@ def run(args):
     print('          1   2   3   4   5   6   7   8   9   a   b   c   d   e   f   0')
     for address in range(start, end, length):
         hexaddy = binascii.hexlify(struct.pack(">H", address))
-        mem = binascii.hexlify(protocol.query(address, length - 1))
+        mem = binascii.hexlify(protocol.query(Range(address, length)))
         print(b''.join([b'0x',hexaddy,b' ',mem]).decode('utf-8'))
