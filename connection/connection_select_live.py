@@ -55,7 +55,7 @@ class ConnectionSelectLive(Connection):
         if self.__write_failures > 3:
             raise ConnectionLostException("Too many sequential write failures (%s)" % self.__write_failures)
         try:
-            response = self.__socket.write(data) # raising ssl.SSLZeroReturnError: TLS/SSL connection has been closed (EOF) (_ssl.c:2472
+            response = self.__socket.write(data)
         except SSLZeroReturnError:
             self.__write_failures = self.__write_failures + 1
             self._connect()
