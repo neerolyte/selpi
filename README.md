@@ -76,62 +76,27 @@ $ ./selpi stat
   {
     "description": "AC Solar Power",
     "name": "CombinedKacoAcPowerHiRes",
-    "value": "572.894287109375W"
+    "value": 4707.696533203125,
+    "units": "W"
   },
   {
     "description": "Shunt 1 Name",
     "name": "Shunt1Name",
-    "value": "Solar"
+    "value": "Solar",
+    "units": ""
   },
-  {
-    "description": "Shunt 1 Power",
-    "name": "Shunt1Power",
-    "value": "-123.046875W"
-  },
-  {
-    "description": "Shunt 2 Name",
-    "name": "Shunt2Name",
-    "value": "None"
-  },
-  {
-    "description": "Shunt 2 Power",
-    "name": "Shunt2Power",
-    "value": "0.0W"
-  },
-  {
-    "description": "Battery Volts",
-    "name": "BatteryVolts",
-    "value": "55.271759033203125V"
-  },
-  {
-    "description": "Battery Temperature",
-    "name": "BatteryTemperature",
-    "value": "22.838134765625\u00b0C"
-  },
-  {
-    "description": "AC Load Power",
-    "name": "LoadAcPower",
-    "value": "633.8310241699219W"
-  },
-  {
-    "description": "Battery Power",
-    "name": "DCBatteryPower",
-    "value": "19.22607421875W"
-  },
-  {
-    "description": "AC Lifetime Load Energy",
-    "name": "ACLoadkWhTotalAcc",
-    "value": "5143750.927734375Wh"
-  },
+...
   {
     "description": "Battery Out Energy Today",
     "name": "BattOutkWhPreviousAcc",
-    "value": "3783.69140625Wh"
+    "value": 5998.53515625,
+    "units": "Wh"
   },
   {
     "description": "Battery State of Charge",
     "name": "BattSocPercent",
-    "value": "99.67578125%"
+    "value": 87.55859375,
+    "units": "%"
   }
 ]
 ```
