@@ -1,6 +1,6 @@
 from exception import ValidationException
 import struct
-from connection import Connection
+from connection import Connection, create as create_connection
 from . import Response
 from . import Request
 from . import Range, Data
@@ -8,8 +8,8 @@ import hashlib
 import os
 
 class Protocol:
-    def __init__(self, connection: Connection, password: bytes=None):
-        self.__connection = connection
+    def __init__(self, connection: Connection=None, password: bytes=None):
+        self.__connection = connection or create_connection()
         self.__password = password or os.getenvb(b'SELPI_SPPRO_PASSWORD')
         self.__read_buffer = bytearray()
 

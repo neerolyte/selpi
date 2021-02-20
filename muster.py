@@ -7,8 +7,8 @@ Muster collects multiple requests for variables, dispatches the queries and
 returns updated variables
 """
 class Muster:
-    def __init__(self, protocol: Protocol):
-        self.__protocol = protocol
+    def __init__(self, protocol: Protocol=None):
+        self.__protocol = protocol or Protocol()
 
     """
     Query the wire protocol for a list of Variables and update the values in the

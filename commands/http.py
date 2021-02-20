@@ -1,14 +1,11 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-from memory import Protocol
-import connection
 from muster import Muster
 from memory import variable
 from base64 import b64encode
 import settings
 
-protocol = Protocol(connection.create())
-muster = Muster(protocol)
+muster = Muster()
 scales = {}
 username = settings.getb(b'HTTP_USERNAME')
 password = settings.getb(b'HTTP_PASSWORD')
@@ -18,7 +15,6 @@ def add_parser(subparsers):
     parser.set_defaults(func=run)
 
 def run(args):
-    protocol.login()
     scale_vars = [
         variable.create('CommonScaleForAcVolts'),
         variable.create('CommonScaleForAcCurrent'),
