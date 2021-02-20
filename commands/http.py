@@ -4,7 +4,6 @@ from memory import Protocol
 import connection
 from muster import Muster
 from memory import variable
-import settings
 
 protocol = Protocol(connection.create())
 muster = Muster(protocol)
