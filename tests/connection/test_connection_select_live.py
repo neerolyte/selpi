@@ -2,6 +2,7 @@ from unittest import TestCase, skip
 from unittest.mock import create_autospec, call
 from connection import ConnectionSelectLive, ssl
 from ssl import SSLSocket
+from exception import ValidationException
 
 class CreateTest(TestCase):
     def test_connect_success(self):
@@ -20,7 +21,7 @@ class CreateTest(TestCase):
         ssl_socket.read.side_effect = [
             b'LOGIN\r\n',
             b'OK\r\n',
-            b'OK\r\n',
+            b'READY\r\n',
         ]
 
         connection.connect()
@@ -36,10 +37,94 @@ class CreateTest(TestCase):
             call(1024), call(1024), call(1024)
         ])
 
-    @skip("todo - LOGIN line wrong")
-    @skip("todo - OKs messed up")
-    def test_connect_failures(self):
-        pass
+    def test_connect_failure_bad_login_line(self):
+        create_ssl_connection = create_autospec(ssl.create_ssl_connection)
+        ssl_socket = create_autospec(SSLSocket)
+        username = b'foo'
+        password = b'bar'
+        connection = ConnectionSelectLive(
+            create_ssl_connection_function=create_ssl_connection,
+            username=username,
+            password=password
+        )
+        create_ssl_connection.side_effect = [ssl_socket]
+        ssl_socket.read.side_effect = [
+            b'WHAT\r\n',
+        ]
+
+        with self.assertRaises(ValidationException) as context:
+            connection.connect()
+
+        self.assertEqual(
+            "Authentication failed, 'LOGIN' prompt was missing, received b'WHAT\\r\\n' instead",
+            context.exception.args[0]
+        )
+        create_ssl_connection.assert_has_calls([
+            call(b'select.live', 7528)
+        ])
+        ssl_socket.write.assert_has_calls([])
+        ssl_socket.read.assert_has_calls([call(1024)])
+
+    def test_connect_failure_bad_user_ok(self):
+        create_ssl_connection = create_autospec(ssl.create_ssl_connection)
+        ssl_socket = create_autospec(SSLSocket)
+        username = b'foo'
+        password = b'bar'
+        connection = ConnectionSelectLive(
+            create_ssl_connection_function=create_ssl_connection,
+            username=username,
+            password=password
+        )
+        create_ssl_connection.side_effect = [ssl_socket]
+        ssl_socket.read.side_effect = [
+            b'LOGIN\r\n',
+            b'WHAT\r\n'
+        ]
+
+        with self.assertRaises(ValidationException) as context:
+            connection.connect()
+
+        self.assertEqual(
+            "Authentication failed, username or password not accepted, received b'WHAT\\r\\n'",
+            context.exception.args[0]
+        )
+        create_ssl_connection.assert_has_calls([
+            call(b'select.live', 7528)
+        ])
+        ssl_socket.write.assert_has_calls([])
+        ssl_socket.read.assert_has_calls([call(1024), call(1024)])
+
+    def test_connect_failure_bad_device_ok(self):
+        create_ssl_connection = create_autospec(ssl.create_ssl_connection)
+        ssl_socket = create_autospec(SSLSocket)
+        username = b'foo'
+        password = b'bar'
+        device = b'1234567'
+        connection = ConnectionSelectLive(
+            create_ssl_connection_function=create_ssl_connection,
+            username=username,
+            password=password,
+            device=device
+        )
+        create_ssl_connection.side_effect = [ssl_socket]
+        ssl_socket.read.side_effect = [
+            b'LOGIN\r\n',
+            b'OK\r\n',
+            b'WHAT\r\n',
+        ]
+
+        with self.assertRaises(ValidationException) as context:
+            connection.connect()
+
+        self.assertEqual(
+            "Authentication failed, device not accepted, received b'WHAT\\r\\n'",
+            context.exception.args[0]
+        )
+        create_ssl_connection.assert_has_calls([
+            call(b'select.live', 7528)
+        ])
+        ssl_socket.write.assert_has_calls([])
+        ssl_socket.read.assert_has_calls([call(1024), call(1024), call(1024)])
 
     @skip("todo")
     def test_write_when_ssl_socket_closed(self):
