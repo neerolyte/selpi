@@ -1,5 +1,5 @@
 import struct
-from crc import CRC
+from . import CRC
 from binascii import hexlify
 
 class Request:

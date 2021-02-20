@@ -1,5 +1,5 @@
 import struct
-import converter
+from memory import convert
 from memory import Range
 
 def create(arg):
@@ -57,7 +57,7 @@ MAP = {
     },
     "CombinedKacoAcPowerHiRes": {
         DESCRIPTION: 'AC Solar Power',
-        ADDRESS: 41896,
+        ADDRESS: 0xa3a8,
         TYPE: "uint",
         UNITS: "W",
         CONVERSION: "ac_w",
@@ -85,7 +85,7 @@ MAP = {
     },
     "DCBatteryPower": {
         DESCRIPTION: 'Battery Power',
-        ADDRESS: 41007,
+        ADDRESS: 0xa02f,
         TYPE: "int",
         UNITS: "W",
         CONVERSION: "dc_w",
@@ -106,14 +106,14 @@ MAP = {
     },
     "Shunt1Name": {
         DESCRIPTION: 'Shunt 1 Name',
-        ADDRESS: 49417,
+        ADDRESS: 0xc109,
         TYPE: "short",
         UNITS: "",
         CONVERSION: "shunt_name",
     },
     "Shunt2Name": {
         DESCRIPTION: 'Shunt 2 Name',
-        ADDRESS: 49418,
+        ADDRESS: 0xc10a,
         TYPE: "short",
         UNITS: "",
         CONVERSION: "shunt_name",
@@ -127,7 +127,7 @@ MAP = {
     },
     "BattOutkWhPreviousAcc": {
         DESCRIPTION: "Battery Out Energy Today",
-        ADDRESS: 41356,
+        ADDRESS: 0xa18c,
         TYPE: "uint",
         UNITS: "Wh",
         CONVERSION: "dc_wh",
@@ -138,6 +138,14 @@ MAP = {
         TYPE: "ushort",
         UNITS: "%",
         CONVERSION: "percent",
+    },
+    "LoginHash": {
+        ADDRESS: 0x1f0000,
+        TYPE: ""
+    },
+    "LoginStatus": {
+        ADDRESS: 0x1f0010,
+        TYPE: "ushort"
     },
 }
 
@@ -204,7 +212,7 @@ class Variable:
         unscaled = struct.unpack(format, self.__bytes)[0]
         if not CONVERSION in mem_info:
             return unscaled
-        return converter.convert(mem_info[CONVERSION], unscaled, scales)
+        return convert(mem_info[CONVERSION], unscaled, scales)
 
     def is_known(self):
         return self.__name in MAP

@@ -1,6 +1,6 @@
 from unittest import TestCase
-from response import Response
-from request import Request
+from memory import Response
+from memory import Request
 from exception import ValidationException
 
 class TestResponse(TestCase):

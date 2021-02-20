@@ -6,3 +6,6 @@ class OutOfBoundsException(Exception):
 
 class NotFoundException(Exception):
     pass
+
+class ConnectionLostException(Exception):
+    pass
