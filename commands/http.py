@@ -4,10 +4,14 @@ from memory import Protocol
 import connection
 from muster import Muster
 from memory import variable
+from base64 import b64encode
+import settings
 
 protocol = Protocol(connection.create())
 muster = Muster(protocol)
 scales = {}
+username = settings.getb(b'HTTP_USERNAME')
+password = settings.getb(b'HTTP_PASSWORD')
 
 def add_parser(subparsers):
     parser = subparsers.add_parser('http', help='start http server')
@@ -35,6 +39,18 @@ def run(args):
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
+        auth = b64encode(username + b':' + password)
+        if self.headers.get('Authorization') != ('Basic %s' % auth.decode('ascii')):
+            return self.do_GET_authenticate()
+        return self.do_GET_api()
+
+    def do_GET_authenticate(self):
+        self.send_response(401)
+        self.send_header('WWW-Authenticate', 'Basic realm=\"Selpi\"')
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+
+    def do_GET_api(self):
         stats = []
         variables = [
             variable.create('CombinedKacoAcPowerHiRes'),
