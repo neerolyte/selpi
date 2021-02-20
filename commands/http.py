@@ -1,4 +1,4 @@
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from memory import Protocol
 import connection
@@ -31,7 +31,7 @@ def run(args):
     print(scales)
     server_address = ('', 8000)
     print("Starting server")
-    httpd = ThreadingHTTPServer(server_address, HTTPRequestHandler)
+    httpd = HTTPServer(server_address, HTTPRequestHandler)
     httpd.serve_forever()
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
