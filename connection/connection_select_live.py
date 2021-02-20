@@ -1,4 +1,5 @@
-from exception import ValidationException
+from ssl import SSLZeroReturnError
+from exception import ConnectionLostException, ValidationException
 import settings
 from . import Connection
 from .ssl import create_ssl_connection
@@ -18,6 +19,7 @@ class ConnectionSelectLive(Connection):
         self.__password = password or settings.getb(b'CONNECTION_SELECT_LIVE_PASSWORD')
         self.__device = device or settings.getb(b'CONNECTION_SELECT_LIVE_DEVICE')
         self.__socket = None
+        self.__write_failures = 0
 
     def _connect(self):
         hostname = b'select.live'
@@ -50,4 +52,14 @@ class ConnectionSelectLive(Connection):
         return self.__socket.read(length)
 
     def _write(self, data: bytes):
-        return self.__socket.write(data) # raising ssl.SSLZeroReturnError: TLS/SSL connection has been closed (EOF) (_ssl.c:2472
+        if self.__write_failures > 3:
+            raise ConnectionLostException("Too many sequential write failures (%s)" % self.__write_failures)
+        try:
+            response = self.__socket.write(data) # raising ssl.SSLZeroReturnError: TLS/SSL connection has been closed (EOF) (_ssl.c:2472
+        except SSLZeroReturnError:
+            self.__write_failures = self.__write_failures + 1
+            self._connect()
+            return self._write(data)
+        self.__write_failures = 0
+        return response
+
