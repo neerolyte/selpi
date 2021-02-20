@@ -43,7 +43,8 @@ class Statistics():
             stats.append({
                 "description": variable.MAP[var.get_name()][variable.DESCRIPTION],
                 "name": var.get_name(),
-                "value": "%s%s" % (var.get_value(self.scales), variable.MAP[var.get_name()][variable.UNITS]),
+                "value": var.get_value(self.scales),
+                "units": variable.MAP[var.get_name()][variable.UNITS],
             })
         return stats
 
