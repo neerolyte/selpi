@@ -8,3 +8,8 @@ services:
       - "$PWD:/selpi"
     working_dir: /selpi
     command: tail -f /dev/null
+  influxdb:
+    image: influxdb:1.8.4
+  grafana:
+    image: grafana/grafana:7.4.2
+    ports: ["3000:3000"]
