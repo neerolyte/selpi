@@ -16,6 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
+  "iteration": 1613901575304,
   "links": [],
   "panels": [
     {
@@ -28,6 +29,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
+      "decimals": null,
       "fieldConfig": {
         "defaults": {
           "color": {},
@@ -36,18 +38,30 @@
             "mode": "absolute",
             "steps": []
           },
-          "unit": "watt"
+          "unit": "percent"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "SoC"
+              "options": "Solar"
             },
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "watt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "watt"
               }
             ]
           }
@@ -80,8 +94,8 @@
       },
       "percentage": false,
       "pluginVersion": "7.4.2",
-      "pointradius": 2,
-      "points": false,
+      "pointradius": 0.5,
+      "points": true,
       "renderer": "flot",
       "seriesOverrides": [
         {
@@ -115,7 +129,7 @@
             },
             {
               "params": [
-                "linear"
+                "none"
               ],
               "type": "fill"
             }
@@ -161,7 +175,7 @@
           "measurement": "point",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"CombinedKacoAcPowerHiRes\") - mean(\"Shunt1Power\") FROM \"point\" WHERE $timeFilter GROUP BY time($__interval) fill(linear)",
+          "query": "SELECT mean(\"CombinedKacoAcPowerHiRes\") - mean(\"Shunt1Power\") FROM \"point\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
           "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
@@ -192,7 +206,7 @@
             },
             {
               "params": [
-                "linear"
+                "none"
               ],
               "type": "fill"
             }
@@ -208,6 +222,43 @@
               {
                 "params": [
                   "BattSocPercent"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "point",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "ACLoadkWhTotalAcc"
                 ],
                 "type": "field"
               },
@@ -265,11 +316,7 @@
       }
     },
     {
-      "aliasColors": {
-        "AC": "purple",
-        "DC": "orange",
-        "Total": "green"
-      },
+      "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
@@ -289,17 +336,15 @@
         "y": 0
       },
       "hiddenSeries": false,
-      "id": 4,
+      "id": 8,
       "legend": {
-        "alignAsTable": false,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "rightSide": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
         "show": true,
         "total": false,
-        "values": true
+        "values": false
       },
       "lines": true,
       "linewidth": 1,
@@ -309,7 +354,7 @@
       },
       "percentage": false,
       "pluginVersion": "7.4.2",
-      "pointradius": 0.5,
+      "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
@@ -318,7 +363,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "AC",
           "groupBy": [
             {
               "params": [
@@ -328,96 +372,14 @@
             },
             {
               "params": [
-                "linear"
+                "null"
               ],
               "type": "fill"
             }
           ],
-          "measurement": "point",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"CombinedKacoAcPowerHiRes\") FROM \"point\" WHERE $timeFilter GROUP BY time($__interval) fill(linear)",
-          "rawQuery": true,
           "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "CombinedKacoAcPowerHiRes"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        },
-        {
-          "alias": "DC",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "point",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT 0 - mean(\"Shunt1Power\") FROM \"point\" WHERE $timeFilter GROUP BY time($__interval) fill(linear)",
-          "rawQuery": true,
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "Shunt1Power"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        },
-        {
-          "alias": "Total",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT mean(\"CombinedKacoAcPowerHiRes\") - mean(\"Shunt1Power\") FROM \"point\" WHERE $timeFilter GROUP BY time($__interval) fill(linear)",
-          "rawQuery": true,
-          "refId": "C",
           "resultFormat": "time_series",
           "select": [
             [
@@ -440,7 +402,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Solar",
+      "title": "Energy",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -456,8 +418,8 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:1000",
-          "format": "watt",
+          "$$hashKey": "object:2055",
+          "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -465,7 +427,7 @@
           "show": true
         },
         {
-          "$$hashKey": "object:1001",
+          "$$hashKey": "object:2056",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -494,21 +456,22 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
-        "x": 12,
+        "x": 0,
         "y": 9
       },
       "hiddenSeries": false,
-      "id": 6,
+      "id": 10,
       "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "avg": true,
+        "current": true,
+        "hideEmpty": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -518,8 +481,420 @@
       },
       "percentage": false,
       "pluginVersion": "7.4.2",
-      "pointradius": 2,
-      "points": false,
+      "pointradius": 0.5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:192",
+          "alias": "Time to full",
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:199",
+          "alias": "Time to empty",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Time to full",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "point",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT -60*(100-mean(\"BattSocPercent\"))/(moving_average(mean(\"DCBatteryPower\"),30)*100/$batteryWh) FROM \"point\" WHERE $timeFilter AND DCBatteryPower < -100 GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "BattSocPercent"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Time to empty",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT 60*(mean(\"BattSocPercent\")-25)/(moving_average(mean(\"DCBatteryPower\"),30)*100/$batteryWh) FROM \"point\" WHERE $timeFilter AND DCBatteryPower > 100 GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Time to go",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:2143",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        },
+        {
+          "$$hashKey": "object:2144",
+          "format": "m",
+          "label": null,
+          "logBase": 2,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Shutdown SoC": "red",
+        "SoC": "green",
+        "SoC/hour": "purple"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "hiddenSeries": false,
+      "id": 12,
+      "legend": {
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 0.5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:2458",
+          "alias": "SoC",
+          "fill": 0,
+          "yaxis": 1
+        },
+        {
+          "$$hashKey": "object:2465",
+          "alias": "SoC/hour",
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:2115",
+          "alias": "Shutdown SoC",
+          "fill": 0,
+          "legend": false,
+          "points": false,
+          "yaxis": 1
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "SoC",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "point",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "BattSocPercent"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "SoC/hour",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "point",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT 0-((mean(\"DCBatteryPower\")*100)/$batteryWh) FROM \"point\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "DCBatteryPower"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Shutdown SoC",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "point",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"StatOfChargeShutdownSoC\") FROM \"point\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "StatOfChargeShutdownSoC"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Battery",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:2231",
+          "format": "percent",
+          "label": "SoC",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:2232",
+          "format": "percent",
+          "label": "SoC/hour",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 18
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 0.5,
+      "points": true,
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
@@ -537,7 +912,7 @@
             },
             {
               "params": [
-                "linear"
+                "none"
               ],
               "type": "fill"
             }
@@ -608,6 +983,221 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "aliasColors": {
+        "AC": "purple",
+        "DC": "orange",
+        "Total": "green"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 18
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "alignAsTable": false,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 0.5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "AC",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "point",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"CombinedKacoAcPowerHiRes\") FROM \"point\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "CombinedKacoAcPowerHiRes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "DC",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "point",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT 0 - mean(\"Shunt1Power\") FROM \"point\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Shunt1Power"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"CombinedKacoAcPowerHiRes\") - mean(\"Shunt1Power\") FROM \"point\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Solar",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1000",
+          "format": "watt",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1001",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "5s",
@@ -615,15 +1205,26 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "description": "Battery total energy in Wh",
+        "error": null,
+        "hide": 2,
+        "label": "Battery energy in Wh",
+        "name": "batteryWh",
+        "query": "24000",
+        "skipUrlSync": false,
+        "type": "constant"
+      }
+    ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Electricity",
   "uid": "YSHFQZyMz",
-  "version": 6
+  "version": 12
 }
