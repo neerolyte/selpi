@@ -23,6 +23,7 @@
       "aliasColors": {
         "Load": "orange",
         "SoC": "purple",
+        "SoC Shutdown": "red",
         "Solar": "green"
       },
       "bars": false,
@@ -112,6 +113,14 @@
           "$$hashKey": "object:1705",
           "alias": "SoC",
           "fill": 0
+        },
+        {
+          "$$hashKey": "object:2531",
+          "alias": "SoC Shutdown",
+          "fill": 0,
+          "legend": false,
+          "points": false,
+          "yaxis": 1
         }
       ],
       "spaceLength": 10,
@@ -234,6 +243,7 @@
           "tags": []
         },
         {
+          "alias": "SoC Shutdown",
           "groupBy": [
             {
               "params": [
@@ -243,7 +253,7 @@
             },
             {
               "params": [
-                "null"
+                "none"
               ],
               "type": "fill"
             }
@@ -258,7 +268,7 @@
             [
               {
                 "params": [
-                  "ACLoadkWhTotalAcc"
+                  "StatOfChargeShutdownSoC"
                 ],
                 "type": "field"
               },
@@ -296,8 +306,8 @@
           "format": "percent",
           "label": "",
           "logBase": 1,
-          "max": "100",
-          "min": "25",
+          "max": null,
+          "min": null,
           "show": true
         },
         {
@@ -442,7 +452,9 @@
       }
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "Time to empty": "orange"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
@@ -519,7 +531,7 @@
           "measurement": "point",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT -60*(100-mean(\"BattSocPercent\"))/(moving_average(mean(\"DCBatteryPower\"),30)*100/$batteryWh) FROM \"point\" WHERE $timeFilter AND DCBatteryPower < -100 GROUP BY time($__interval) fill(null)",
+          "query": "SELECT -60*(100-mean(\"BattSocPercent\"))/(moving_average(mean(\"DCBatteryPower\"),30)*100/$batteryWh) FROM \"point\" WHERE $timeFilter AND DCBatteryPower < -100 GROUP BY time($__interval) fill(none)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -558,7 +570,7 @@
           "hide": false,
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT 60*(mean(\"BattSocPercent\")-25)/(moving_average(mean(\"DCBatteryPower\"),30)*100/$batteryWh) FROM \"point\" WHERE $timeFilter AND DCBatteryPower > 100 GROUP BY time($__interval) fill(null)",
+          "query": "SELECT 60*(mean(\"BattSocPercent\")-25)/(moving_average(mean(\"DCBatteryPower\"),30)*100/$batteryWh) FROM \"point\" WHERE $timeFilter AND DCBatteryPower > 100 GROUP BY time($__interval) fill(none)",
           "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
@@ -625,8 +637,8 @@
     {
       "aliasColors": {
         "Shutdown SoC": "red",
-        "SoC": "green",
-        "SoC/hour": "purple"
+        "SoC": "purple",
+        "SoC/hour": "green"
       },
       "bars": false,
       "dashLength": 10,
@@ -1226,5 +1238,5 @@
   "timezone": "",
   "title": "Electricity",
   "uid": "YSHFQZyMz",
-  "version": 12
+  "version": 13
 }
