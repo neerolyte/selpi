@@ -25,6 +25,7 @@ class Statistics():
             variable.create('ACLoadkWhTotalAcc'),
             variable.create('BattOutkWhPreviousAcc'),
             variable.create('BattSocPercent'),
+            variable.create('StatOfChargeShutdownSoC'),
         ]
         self.__scales = None
 
