@@ -147,6 +147,18 @@ MAP = {
         ADDRESS: 0x1f0010,
         TYPE: "ushort"
     },
+    "StateOfChargeShutdown": {
+        DESCRIPTION: 'Whether SoC shutdown is enabled (1 = true)',
+        ADDRESS: 0xc082,
+        TYPE: "ushort",
+        UNITS: '%',
+    },
+    "StatOfChargeShutdownSoC": {
+        DESCRIPTION: 'State of Charge at which inverter will shutdown',
+        ADDRESS: 0xc071,
+        TYPE: "ushort",
+        UNITS: '%',
+    },
 }
 
 TYPES = {
