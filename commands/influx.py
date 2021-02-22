@@ -52,8 +52,9 @@ class InfluxWriter():
         while True:
             self.__update()
             sleep_duration = self.__get_sleep_duration()
-            print("Sleeping for %s" % sleep_duration)
-            time.sleep(sleep_duration)
+            if sleep_duration > 0:
+                print("Sleeping for %s" % sleep_duration)
+                time.sleep(sleep_duration)
 
     def __update(self):
         for group in self.__variables_groups:
