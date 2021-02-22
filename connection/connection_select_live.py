@@ -3,6 +3,7 @@ from exception import ConnectionLostException, ValidationException
 import settings
 from . import Connection
 from .ssl import create_ssl_connection
+import socket
 
 class ConnectionSelectLive(Connection):
     def __init__(
@@ -15,6 +16,7 @@ class ConnectionSelectLive(Connection):
         self.__settings_module = settings_module or settings
         self.__socket = None
         self.__write_failures = 0
+        self.__read_failures = 0
 
     def _connect(self):
         hostname = b'select.live'
@@ -47,7 +49,16 @@ class ConnectionSelectLive(Connection):
             )
 
     def _read(self, length: int):
-        return self.__socket.read(length)
+        if self.__read_failures > 3:
+            raise ConnectionLostException("Too many sequential read failures (%s)" % self.__read_failures)
+        try:
+            response = self.__socket.read(length)
+        except socket.timeout:
+            self.__read_failures = self.__read_failures + 1
+            self._connect()
+            return self._read(length)
+        self.__read_failures = 0
+        return response
 
     def _write(self, data: bytes):
         if self.__write_failures > 3:

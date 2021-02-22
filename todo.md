@@ -8,4 +8,3 @@
      * doco how to change battery energy variable
    * more temperatures
  * get influxdb data aging working
- * try splitting things like StatOfChargeShutdownSoC to another influx measurement that updates slower (like hourly)
