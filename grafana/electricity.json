@@ -221,7 +221,7 @@
             }
           ],
           "hide": false,
-          "measurement": "medium",
+          "measurement": "fast",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "C",
@@ -253,13 +253,13 @@
             },
             {
               "params": [
-                "none"
+                "previous"
               ],
               "type": "fill"
             }
           ],
           "hide": false,
-          "measurement": "slow",
+          "measurement": "medium",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "D",
@@ -306,7 +306,7 @@
           "format": "percent",
           "label": "",
           "logBase": 1,
-          "max": null,
+          "max": "100",
           "min": null,
           "show": true
         },
@@ -841,17 +841,17 @@
             },
             {
               "params": [
-                "null"
+                "previous"
               ],
               "type": "fill"
             }
           ],
           "hide": false,
-          "measurement": "point",
+          "measurement": "medium",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"StatOfChargeShutdownSoC\") FROM \"slow\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
-          "rawQuery": true,
+          "query": "SELECT mean(\"StatOfChargeShutdownSoC\")\nFROM \"slow\"\n-- allow regular timefilter\nWHERE $timeFilter\n-- but most of the time fetch the last 48 hours as stat only updates once a day\nOR time > now() - 2d\nGROUP BY time($__interval)\n-- keep drawing from last update\nfill(previous)",
+          "rawQuery": false,
           "refId": "C",
           "resultFormat": "time_series",
           "select": [
@@ -1285,12 +1285,12 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Electricity",
   "uid": "YSHFQZyMz",
-  "version": 18
+  "version": 19
 }
