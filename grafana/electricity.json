@@ -71,7 +71,7 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 12,
         "x": 0,
         "y": 0
@@ -327,14 +327,14 @@
     },
     {
       "aliasColors": {
-        "Shutdown SoC": "red",
-        "SoC": "purple",
-        "SoC/hour": "green"
+        "Load": "orange",
+        "Solar": "green"
       },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -344,20 +344,20 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 12,
         "x": 12,
         "y": 0
       },
       "hiddenSeries": false,
-      "id": 12,
+      "id": 14,
       "legend": {
         "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
+        "current": false,
+        "max": false,
+        "min": false,
         "show": true,
-        "total": false,
+        "total": true,
         "values": true
       },
       "lines": true,
@@ -371,33 +371,13 @@
       "pointradius": 0.5,
       "points": true,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:2458",
-          "alias": "SoC",
-          "fill": 0,
-          "yaxis": 1
-        },
-        {
-          "$$hashKey": "object:2465",
-          "alias": "SoC/hour",
-          "yaxis": 2
-        },
-        {
-          "$$hashKey": "object:2115",
-          "alias": "Shutdown SoC",
-          "fill": 0,
-          "legend": false,
-          "points": false,
-          "yaxis": 1
-        }
-      ],
+      "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "alias": "SoC",
+          "alias": "Load",
           "groupBy": [
             {
               "params": [
@@ -407,74 +387,36 @@
             },
             {
               "params": [
-                "none"
+                "null"
               ],
               "type": "fill"
             }
           ],
-          "measurement": "medium",
+          "measurement": "fast",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT mean(\"LoadAcPower\")/6 FROM \"fast\" WHERE $timeFilter GROUP BY time(10m) fill(none)",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "BattSocPercent"
+                  "LoadAcPower"
                 ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "integral"
               }
             ]
           ],
           "tags": []
         },
         {
-          "alias": "SoC/hour",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "linear"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "point",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT 0-((mean(\"DCBatteryPower\")*100)/$batteryWh) FROM \"fast\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
-          "rawQuery": true,
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "DCBatteryPower"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        },
-        {
-          "alias": "Shutdown SoC",
+          "alias": "Solar",
           "groupBy": [
             {
               "params": [
@@ -490,18 +432,18 @@
             }
           ],
           "hide": false,
-          "measurement": "point",
+          "measurement": "fast",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"StatOfChargeShutdownSoC\") FROM \"slow\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "query": "SELECT (mean(\"CombinedKacoAcPowerHiRes\") - mean(\"Shunt1Power\"))/6 FROM \"fast\" WHERE $timeFilter GROUP BY time(10m) fill(none)",
           "rawQuery": true,
-          "refId": "C",
+          "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "StatOfChargeShutdownSoC"
+                  "CombinedKacoAcPowerHiRes"
                 ],
                 "type": "field"
               },
@@ -518,7 +460,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Battery",
+      "title": "Energy",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -534,18 +476,18 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:2231",
-          "format": "percent",
-          "label": "SoC",
+          "$$hashKey": "object:3576",
+          "format": "watth",
+          "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
-          "$$hashKey": "object:2232",
-          "format": "percent",
-          "label": "SoC/hour",
+          "$$hashKey": "object:3577",
+          "format": "short",
+          "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
@@ -574,10 +516,10 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 12,
         "x": 0,
-        "y": 9
+        "y": 8
       },
       "hiddenSeries": false,
       "id": 10,
@@ -742,6 +684,369 @@
     },
     {
       "aliasColors": {
+        "Shutdown SoC": "red",
+        "SoC": "purple",
+        "SoC/hour": "green"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 12,
+      "legend": {
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 0.5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:2458",
+          "alias": "SoC",
+          "fill": 0,
+          "yaxis": 1
+        },
+        {
+          "$$hashKey": "object:2465",
+          "alias": "SoC/hour",
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:2115",
+          "alias": "Shutdown SoC",
+          "fill": 0,
+          "legend": false,
+          "points": false,
+          "yaxis": 1
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "SoC",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "fast",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "BattSocPercent"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "SoC/hour",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "point",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT 0-((mean(\"DCBatteryPower\")*100)/$batteryWh) FROM \"fast\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "DCBatteryPower"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Shutdown SoC",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "point",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"StatOfChargeShutdownSoC\") FROM \"slow\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "StatOfChargeShutdownSoC"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Battery",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:2231",
+          "decimals": null,
+          "format": "percent",
+          "label": "SoC",
+          "logBase": 1,
+          "max": "100",
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:2232",
+          "format": "percent",
+          "label": "SoC/hour",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 0.5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Battery",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "medium",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"ACLoadkWhTotalAcc\") FROM \"point\" WHERE $timeFilter GROUP BY time($__interval) fill(linear)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "BatteryTemperature"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Temperatures",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1784",
+          "format": "celsius",
+          "label": null,
+          "logBase": 1,
+          "max": "50",
+          "min": "5",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1785",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
         "AC": "purple",
         "DC": "orange",
         "Total": "green"
@@ -759,10 +1064,10 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
+        "h": 7,
         "w": 12,
         "x": 12,
-        "y": 9
+        "y": 16
       },
       "hiddenSeries": false,
       "id": 4,
@@ -788,7 +1093,12 @@
       "pointradius": 0.5,
       "points": true,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "AC",
+          "yaxis": 1
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -954,136 +1264,6 @@
         "align": false,
         "alignLevel": null
       }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 18
-      },
-      "hiddenSeries": false,
-      "id": 6,
-      "legend": {
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.4.2",
-      "pointradius": 0.5,
-      "points": true,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "Battery",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "none"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "medium",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT mean(\"ACLoadkWhTotalAcc\") FROM \"point\" WHERE $timeFilter GROUP BY time($__interval) fill(linear)",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "BatteryTemperature"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Temperatures",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1784",
-          "format": "celsius",
-          "label": null,
-          "logBase": 1,
-          "max": "50",
-          "min": "5",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1785",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
     }
   ],
   "refresh": "5s",
@@ -1112,5 +1292,5 @@
   "timezone": "",
   "title": "Electricity",
   "uid": "YSHFQZyMz",
-  "version": 14
+  "version": 18
 }
