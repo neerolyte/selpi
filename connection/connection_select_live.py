@@ -3,6 +3,7 @@ from exception import ConnectionLostException, ValidationException
 import settings
 from . import Connection
 from .ssl import create_ssl_connection
+import re
 
 class ConnectionSelectLive(Connection):
     def __init__(
@@ -41,10 +42,18 @@ class ConnectionSelectLive(Connection):
         self._write(b'CONNECT:'+device+b'\r\n')
         response = self._read(1024)
         if response != b'READY\r\n':
+            devices = self._get_devices()
             raise ValidationException(
-                "Authentication failed, device not accepted, received %s"
-                % response
+                "Authentication failed.\n  Device '%s' not accepted\n  Response: '%s'\n  Available devices: %s"
+                % (device.decode('utf-8'), response.decode('utf-8').strip(), devices)
             )
+
+    def _get_devices(self):
+        self._write(b'LIST DEVICES\r\n')
+        match = re.search(r'^DEVICE:([0-9]+)\r\n', self._read(1024).decode('utf-8'), re.MULTILINE)
+        if match:
+            return ', '.join(match.groups())
+        return ''
 
     def _read(self, length: int):
         return self.__socket.read(length)

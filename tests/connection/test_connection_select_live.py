@@ -41,6 +41,49 @@ class CreateTest(TestCase):
             call(1024), call(1024), call(1024)
         ])
 
+    def test_connect_bad_device(self):
+        create_ssl_connection = create_autospec(ssl.create_ssl_connection)
+        ssl_socket = create_autospec(SSLSocket)
+        settings_module = create_autospec(settings)
+        settings_module.getb.side_effect = (lambda key:
+            {
+                b'CONNECTION_SELECT_LIVE_USERNAME': b'foo',
+                b'CONNECTION_SELECT_LIVE_PASSWORD': b'bar',
+                b'CONNECTION_SELECT_LIVE_DEVICE': b'987654',
+            }[key]
+        )
+        connection = ConnectionSelectLive(
+            create_ssl_connection_function=create_ssl_connection,
+            settings_module=settings_module
+        )
+        create_ssl_connection.side_effect = [ssl_socket]
+        ssl_socket.read.side_effect = [
+            b'LOGIN\r\n',
+            b'OK\r\n',
+            b'REJECTED\r\n',
+            b'DEVICES:1\r\nDEVICE:1234567\r\n',
+        ]
+
+        with self.assertRaises(ValidationException) as context:
+            connection.connect()
+
+        self.assertEqual(
+            "Authentication failed.\n  Device '987654' not accepted\n  Response: 'REJECTED'\n  Available devices: 1234567",
+            context.exception.args[0]
+        )
+
+        create_ssl_connection.assert_has_calls([
+            call(b'select.live', 7528)
+        ])
+        ssl_socket.write.assert_has_calls([
+            call(b'USER:foo:bar\r\n'),
+            call(b'CONNECT:987654\r\n'),
+            call(b'LIST DEVICES\r\n'),
+        ])
+        ssl_socket.read.assert_has_calls([
+            call(1024), call(1024), call(1024), call(1024)
+        ])
+
     def test_connect_failure_bad_login_line(self):
         create_ssl_connection = create_autospec(ssl.create_ssl_connection)
         ssl_socket = create_autospec(SSLSocket)
@@ -105,41 +148,6 @@ class CreateTest(TestCase):
         ])
         ssl_socket.write.assert_has_calls([])
         ssl_socket.read.assert_has_calls([call(1024), call(1024)])
-
-    def test_connect_failure_bad_device_ok(self):
-        create_ssl_connection = create_autospec(ssl.create_ssl_connection)
-        ssl_socket = create_autospec(SSLSocket)
-        settings_module = create_autospec(settings)
-        settings_module.getb.side_effect = (lambda key:
-            {
-                b'CONNECTION_SELECT_LIVE_USERNAME': b'foo',
-                b'CONNECTION_SELECT_LIVE_PASSWORD': b'bar',
-                b'CONNECTION_SELECT_LIVE_DEVICE': b'1234567',
-            }[key]
-        )
-        connection = ConnectionSelectLive(
-            create_ssl_connection_function=create_ssl_connection,
-            settings_module=settings_module
-        )
-        create_ssl_connection.side_effect = [ssl_socket]
-        ssl_socket.read.side_effect = [
-            b'LOGIN\r\n',
-            b'OK\r\n',
-            b'WHAT\r\n',
-        ]
-
-        with self.assertRaises(ValidationException) as context:
-            connection.connect()
-
-        self.assertEqual(
-            "Authentication failed, device not accepted, received b'WHAT\\r\\n'",
-            context.exception.args[0]
-        )
-        create_ssl_connection.assert_has_calls([
-            call(b'select.live', 7528)
-        ])
-        ssl_socket.write.assert_has_calls([])
-        ssl_socket.read.assert_has_calls([call(1024), call(1024), call(1024)])
 
     """
     This appears to occur when the ssl socket has been idle for a while
