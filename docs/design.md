@@ -14,20 +14,27 @@ classDiagram
   %% ..   Link (Dashed)
 
   direction LR
-  class ScaledVariable{
+  class Variable{
     +str name
-    +RawVariable raw
+    +Raw raw
     +Scales scales
   }
-  ScaledVariable <|-- ScaledVariableScale
-  ScaledVariable <|-- ScaledVariableTemperature
-  ScaledVariable <|-- ScaledVariableVolts
-  ScaledVariable <|-- ScaledVariableAmps
-  ScaledVariable <|-- ScaledVariableWatts
-  ScaledVariable <|-- ScaledVariableWattHours
-  ScaledVariable ..> Scales
-  ScaledVariable ..> RawVariable
-  RangeContainer ..|> ScaledVariable
+  Variable <|-- VariableScale
+  Variable <|-- VariableTemperature
+  Variable <|-- VariableVolts
+  Variable <|-- VariableAmps
+  Variable <|-- VariableWatts
+  Variable <|-- VariableWattHours
+  Variable ..> Scales
+  Variable ..> Raw
+  RangeInterface ..|> Variable
+
+  class Variables{
+    +VariableWatts load_ac_power
+    +VariableWattHours load_total_energy
+    +VariableVolts battery_volts
+  }
+  Variables ..> Variable
 
   class Scales{
     +Scale ac_volts
@@ -38,34 +45,36 @@ classDiagram
     +Scale internal_volts
   }
   Scales ..> Scale
-  RangeContainer ..|> Scales
 
   class Scale{
-    +RawVariable raw
+    +Raw raw
   }
-  Scale ..> RawVariable
+  Scale ..> Raw
+  RangeInterface ..|> Scale
 
   %% Raw (unscaled) bytes from SP Pro.
-  class RawVariable{
+  class Raw{
     <<Abstract>>
     +Range range
     +mixed value
   }
-  RawVariable <|-- RawVariableShort
-  RawVariable <|-- RawVariableUShort
-  RawVariable <|-- RawVariableInt
-  RawVariable <|-- RawVariableUInt
-  RawVariable ..> Range
+  Raw <|-- RawShort
+  Raw <|-- RawUShort
+  Raw <|-- RawInt
+  Raw <|-- RawUInt
+  Raw ..> Range
 
-  class RangeContainer
-  <<interface>> RangeContainer
+  class RangeInterface{
+    <<interface>>
+    +Range range
+  }
 
   class Range{
     +address: int
     +words: int
     +bytes: ?bytes
   }
-  RangeContainer ..|> Range %% implements
+  RangeInterface ..|> Range %% implements
 ```
 
 ## Protocol
@@ -76,7 +85,7 @@ classDiagram
 
   class Getter{
     +Protocol protocol
-    +fetch(ranges:List~RangeContainer~) None
+    +fetch(ranges:List~RangeInterface~) None
   }
   class Protocol{
 
