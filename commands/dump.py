@@ -1,5 +1,4 @@
 import struct,  binascii
-import connection
 from memory import Protocol, Range
 
 def add_parser(subparsers):
@@ -7,8 +6,7 @@ def add_parser(subparsers):
     parser.set_defaults(func=run)
 
 def run(args):
-    protocol = Protocol(connection.create())
-    protocol.login()
+    protocol = Protocol()
 
     # Before 0xa001 we don't get anything back
     start=0xa001
