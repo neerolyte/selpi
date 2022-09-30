@@ -1,9 +1,11 @@
 from . import Connection
+import settings
+import socket
 
 class ConnectionTCP(Connection):
     def _connect(self):
-        hostname = os.getenvb(b'SELPI_CONNECTION_TCP_HOSTNAME')
-        port = int(os.getenvb(b'SELPI_CONNECTION_TCP_PORT'))
+        hostname = settings.getb(b'CONNECTION_TCP_HOSTNAME')
+        port = int(settings.getb(b'CONNECTION_TCP_PORT'))
         self.__sock = socket.create_connection((hostname, port))
 
     def _read(self, length: int):
