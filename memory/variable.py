@@ -1,3 +1,4 @@
+from email.headerregistry import Address
 import struct
 from memory import convert
 from memory import Range
@@ -125,9 +126,113 @@ MAP = {
         UNITS: "°C",
         CONVERSION: "temperature",
     },
+    "DCkWhOut": {
+        ADDRESS: 41257,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "DCkWhOutToday": {
+        ADDRESS: 41137,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "DCkWhInToday": {
+        ADDRESS: 41135,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattOutkWhAcc": {
+        ADDRESS: 41143,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "QuickView_BattOutkWhAcc": {
+        ADDRESS: 41178,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
     "BattOutkWhPreviousAcc": {
         DESCRIPTION: "Battery Out Energy Today",
-        ADDRESS: 0xa18c,
+        ADDRESS: 41356,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattOutkWh7DayAcc": {
+        ADDRESS: 41358,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattOutkWh7DayAccAvg": {
+        ADDRESS: 41360,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattOutkWh30DayAcc": {
+        ADDRESS: 41362,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattOutkWh30DayAccAvg": {
+        ADDRESS: 41364,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattOutkWh365DayAcc": {
+        ADDRESS: 41366,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattOutkWh365DayAccAvg": {
+        ADDRESS: 41368,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattOutkWhYearAcc": {
+        ADDRESS: 41370,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattOutkWhYearAccAvg": {
+        ADDRESS: 41372,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattOutkWhResetableAcc": {
+        ADDRESS: 41374,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattOutkWhResetableAccAvg": {
+        ADDRESS: 41376,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattOutkWhTotalAcc": {
+        DESCRIPTION: "Battery Out Energy Total Accumulated",
+        ADDRESS: 41381,
+        TYPE: "uint",
+        UNITS: "Wh",
+        CONVERSION: "dc_wh",
+    },
+    "BattInkWhTotalAcc": {
+        DESCRIPTION: "Battery In Energy Total Accumulated",
+        ADDRESS: 41354,
         TYPE: "uint",
         UNITS: "Wh",
         CONVERSION: "dc_wh",

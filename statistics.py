@@ -51,7 +51,10 @@ class Statistics():
 
     def get_select_emulated(self):
         vars = {
-            "battery_out_wh_total": variable.create('BattOutkWhPreviousAcc'),
+            "battery_in_wh_today": variable.create("DCkWhInToday"),
+            "battery_in_wh_total": variable.create('BattInkWhTotalAcc'),
+            "battery_out_wh_today": variable.create("DCkWhOutToday"),
+            "battery_out_wh_total": variable.create('BattOutkWhTotalAcc'),
             "battery_soc": variable.create('BattSocPercent'),
             "shunt_w_negated": variable.create('Shunt1Power'),
             "battery_w": variable.create('DCBatteryPower'),
@@ -62,10 +65,10 @@ class Statistics():
         self.__update(list(vars.values()))
         timestamp = int(time.time())
         items = {
-            #"battery_in_wh_today": 0,
-            #"battery_in_wh_total": 0,
-            #"battery_out_wh_today": 0,
-            "battery_out_wh_total": vars["battery_out_wh_total"].get_value(self.scales),
+            "battery_in_wh_today": vars["battery_in_wh_today"].get_value(self.scales) / 1000,
+            "battery_in_wh_total": vars["battery_in_wh_total"].get_value(self.scales) / 1000,
+            "battery_out_wh_today": vars["battery_out_wh_today"].get_value(self.scales) / 1000,
+            "battery_out_wh_total": vars["battery_out_wh_total"].get_value(self.scales) / 1000,
             "battery_soc": vars["battery_soc"].get_value(self.scales),
             "battery_w": vars["battery_w"].get_value(self.scales),
             #"fault_code": 0,
