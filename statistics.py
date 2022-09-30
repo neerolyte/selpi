@@ -1,5 +1,6 @@
 from muster import Muster
 from memory import variable
+import time
 
 class Statistics():
     def __init__(self):
@@ -47,6 +48,51 @@ class Statistics():
                 "units": variable.MAP[var.get_name()][variable.UNITS],
             })
         return stats
+
+    def get_select_emulated(self):
+        vars = {
+            "battery_out_wh_total": variable.create('BattOutkWhPreviousAcc'),
+            "battery_soc": variable.create('BattSocPercent'),
+            "shunt_w_negated": variable.create('Shunt1Power'),
+            "battery_w": variable.create('DCBatteryPower'),
+            "load_w": variable.create('LoadAcPower'),
+            "solarinverter_w": variable.create('CombinedKacoAcPowerHiRes'),
+
+        }
+        self.__update(list(vars.values()))
+        timestamp = int(time.time())
+        items = {
+            #"battery_in_wh_today": 0,
+            #"battery_in_wh_total": 0,
+            #"battery_out_wh_today": 0,
+            "battery_out_wh_total": vars["battery_out_wh_total"].get_value(self.scales),
+            "battery_soc": vars["battery_soc"].get_value(self.scales),
+            "battery_w": vars["battery_w"].get_value(self.scales),
+            #"fault_code": 0,
+            #"fault_ts": 0,
+            #"gen_status": 0,
+            #"grid_in_wh_today":0.0,
+            #"grid_in_wh_total":0.0,
+            #"grid_out_wh_today":0.0,
+            #"grid_out_wh_total":0.0,
+            #"grid_w":0,
+            "load_w": vars["load_w"].get_value(self.scales),
+            #"load_wh_today":0,
+            #"load_wh_total":0,
+            "shunt_w": 0 - vars["shunt_w_negated"].get_value(self.scales),
+            #"solar_wh_today":0,
+            #"solar_wh_total":0,
+            "solarinverter_w": vars["solarinverter_w"].get_value(self.scales),
+            "timestamp": timestamp
+        }
+        return {
+            "device": {
+                "name": "Selectronic SP-PRO",
+            },
+            "item_count": len(items),
+            "items": items,
+            "now": timestamp
+        }
 
     @property
     def scales(self):

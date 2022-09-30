@@ -19,7 +19,7 @@ def get_commands() -> list:
     commands = []
     for _, _, files in os.walk(script_dir+'/commands'):
         for file in files:
-            match = re.search('^([a-z]+)\.py$', file)
+            match = re.search('^([a-z-]+)\.py$', file)
             if not match:
                 continue
             commands.append(match.group(1))
