@@ -261,7 +261,7 @@ MAP = {
     "ACInputWhTodayAcc": {
         DESCRIPTION: "Input energy accumulated today",
         ADDRESS: SPPRO_ADDRESSES["ACInputkWhAcc"],
-        TYPE: "uint",
+        TYPE: "ushort",
         CONVERSION: "ac_wh",
     },
     "ACExportWhTotalAcc": {
@@ -305,6 +305,11 @@ MAP = {
         ADDRESS: SPPRO_ADDRESSES["Shunt1kWhAcc"],
         TYPE: "short",
         CONVERSION: "dc_wh",
+    },
+    "ACGeneratorPower": {
+        ADDRESS: SPPRO_ADDRESSES["ACGeneratorPower"],
+        TYPE: "short",
+        CONVERSION: "ac_w_signed",
     },
     "LoginHash": {
         ADDRESS: 0x1f0000,

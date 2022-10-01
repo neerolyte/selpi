@@ -70,6 +70,7 @@ class Statistics():
             "Shunt1WhTotalAcc": variable.create("Shunt1WhTotalAcc"),
             "ACSolarWhTodayAcc": variable.create("ACSolarWhTodayAcc"),
             "Shunt1WhTodayAcc": variable.create("Shunt1WhTodayAcc"),
+            "ACGeneratorPower": variable.create("ACGeneratorPower"),
         }
         self.__update(list(vars.values()))
         timestamp = int(time.time())
@@ -83,11 +84,11 @@ class Statistics():
             #"fault_code": 0,
             #"fault_ts": 0,
             #"gen_status": 0,
-            "grid_in_wh_today": vars["ACInputWhTodayAcc"].get_value(self.scales) / 1000, # unverified guess
+            "grid_in_wh_today": vars["ACInputWhTodayAcc"].get_value(self.scales) / 1000,
             "grid_in_wh_total": vars["ACInputWhTotalAcc"].get_value(self.scales) / 1000,
             "grid_out_wh_today": vars["ACExportWhTodayAcc"].get_value(self.scales) / 1000, # unverified guess
             "grid_out_wh_total": vars["ACExportWhTotalAcc"].get_value(self.scales) / 1000, # unverified guess
-            #"grid_w": 0.0,
+            "grid_w": vars["ACGeneratorPower"].get_value(self.scales),
             "load_w": vars["LoadAcPower"].get_value(self.scales),
             "load_wh_today": vars["ACLoadWhAcc"].get_value(self.scales) / 1000,
             "load_wh_total": vars["ACLoadkWhTotalAcc"].get_value(self.scales) / 1000,
