@@ -59,7 +59,7 @@ class Statistics():
             "Shunt1Power": variable.create('Shunt1Power'),
             "DCBatteryPower": variable.create('DCBatteryPower'),
             "LoadAcPower": variable.create('LoadAcPower'),
-            "solarinverter_w": variable.create('CombinedKacoAcPowerHiRes'),
+            "CombinedKacoAcPowerHiRes": variable.create('CombinedKacoAcPowerHiRes'),
             "ACLoadkWhTotalAcc": variable.create("ACLoadkWhTotalAcc"),
             "ACInputWhTodayAcc": variable.create("ACInputWhTodayAcc"),
             "ACInputWhTotalAcc": variable.create("ACInputWhTotalAcc"),
@@ -96,7 +96,7 @@ class Statistics():
             # TODO: assumes shunt 1 is always a solar shunt
             "solar_wh_today": ( vars["ACSolarWhTodayAcc"].get_value(self.scales) + 0 - vars["Shunt1WhTodayAcc"].get_value(self.scales)) / 1000,
             "solar_wh_total": (vars["ACSolarWhTotalAcc"].get_value(self.scales) + (0 -vars["Shunt1WhTotalAcc"].get_value(self.scales))) / 1000,
-            "solarinverter_w": vars["solarinverter_w"].get_value(self.scales),
+            "solarinverter_w": vars["CombinedKacoAcPowerHiRes"].get_value(self.scales),
             "timestamp": timestamp,
         }
         return {
