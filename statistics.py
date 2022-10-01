@@ -63,10 +63,12 @@ class Statistics():
             "solarinverter_w": variable.create('CombinedKacoAcPowerHiRes'),
             "load_wh_total": variable.create("ACLoadkWhTotalAcc"),
             "grid_in_wh_total": variable.create("ACInputWhTotalAcc"),
+            "load_wh_today": variable.create("ACLoadWhAcc"),
         }
         self.__update(list(vars.values()))
         timestamp = int(time.time())
         items = {
+            "comment": "energies are actually in kWh, not Wh",
             "battery_in_wh_today": vars["battery_in_wh_today"].get_value(self.scales) / 1000,
             "battery_in_wh_total": vars["battery_in_wh_total"].get_value(self.scales) / 1000,
             "battery_out_wh_today": vars["battery_out_wh_today"].get_value(self.scales) / 1000,
@@ -80,9 +82,9 @@ class Statistics():
             "grid_in_wh_total": vars["grid_in_wh_total"].get_value(self.scales) / 1000,
             #"grid_out_wh_today":0.0,
             #"grid_out_wh_total":0.0,
-            "grid_w": vars["grid_w"].get_value(self.scales),
+            #"grid_w": vars["grid_w"].get_value(self.scales),
             "load_w": vars["load_w"].get_value(self.scales),
-            #"load_wh_today": vars["load_wh_today"].get_value(self.scales) / 1000,
+            "load_wh_today": vars["load_wh_today"].get_value(self.scales) / 1000,
             "load_wh_total": vars["load_wh_total"].get_value(self.scales) / 1000,
             "shunt_w": 0 - vars["shunt_w_negated"].get_value(self.scales),
             #"solar_wh_today":0,

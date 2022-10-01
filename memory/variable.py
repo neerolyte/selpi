@@ -258,6 +258,12 @@ MAP = {
         TYPE: "uint",
         CONVERSION: "ac_wh",
     },
+    "ACLoadWhAcc": {
+        DESCRIPTION: "Load energy accumulated today",
+        ADDRESS: SPPRO_ADDRESSES["ACLoadkWhAcc"],
+        TYPE: "uint",
+        CONVERSION: "ac_wh",
+    },
     "LoginHash": {
         ADDRESS: 0x1f0000,
         TYPE: ""
