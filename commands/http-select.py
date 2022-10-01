@@ -5,12 +5,12 @@ from statistics import Statistics
 statistics = Statistics()
 
 def add_parser(subparsers):
-    parser = subparsers.add_parser('select-emulator', help='select.live device emulation')
+    parser = subparsers.add_parser('http-select', help='select.live http emulation')
     parser.set_defaults(func=run)
 
 def run(args):
     server_address = ('', 8000)
-    print("Starting server")
+    print("Starting server on port 8000")
     httpd = HTTPServer(server_address, HTTPRequestHandler)
     httpd.serve_forever()
 
