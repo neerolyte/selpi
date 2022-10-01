@@ -59,8 +59,9 @@ class Statistics():
             "shunt_w_negated": variable.create('Shunt1Power'),
             "battery_w": variable.create('DCBatteryPower'),
             "load_w": variable.create('LoadAcPower'),
+            "grid_w": variable.create('ACGeneratorPower'),
             "solarinverter_w": variable.create('CombinedKacoAcPowerHiRes'),
-
+            "load_wh_total": variable.create("ACLoadkWhTotalAcc"),
         }
         self.__update(list(vars.values()))
         timestamp = int(time.time())
@@ -78,15 +79,15 @@ class Statistics():
             #"grid_in_wh_total":0.0,
             #"grid_out_wh_today":0.0,
             #"grid_out_wh_total":0.0,
-            #"grid_w":0,
+            "grid_w": vars["grid_w"].get_value(self.scales),
             "load_w": vars["load_w"].get_value(self.scales),
-            #"load_wh_today":0,
-            #"load_wh_total":0,
+            #"load_wh_today": vars["load_wh_today"].get_value(self.scales) / 1000,
+            "load_wh_total": vars["load_wh_total"].get_value(self.scales) / 1000,
             "shunt_w": 0 - vars["shunt_w_negated"].get_value(self.scales),
             #"solar_wh_today":0,
             #"solar_wh_total":0,
             "solarinverter_w": vars["solarinverter_w"].get_value(self.scales),
-            "timestamp": timestamp
+            "timestamp": timestamp,
         }
         return {
             "device": {

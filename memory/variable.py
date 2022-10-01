@@ -70,6 +70,13 @@ MAP = {
         UNITS: "W",
         CONVERSION: "ac_w",
     },
+    "ACGeneratorPower": {
+        DESCRIPTION: 'AC Generator Power',
+        ADDRESS: 41098,
+        TYPE: "uint",
+        UNITS: "W",
+        CONVERSION: "ac_w",
+    },
     "ACLoadkWhTotalAcc": {
         DESCRIPTION: 'AC Lifetime Load Energy',
         ADDRESS: 41438,
