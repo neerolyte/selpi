@@ -258,6 +258,24 @@ MAP = {
         TYPE: "uint",
         CONVERSION: "ac_wh",
     },
+    "ACInputWhTodayAcc": {
+        DESCRIPTION: "Input energy accumulated today",
+        ADDRESS: SPPRO_ADDRESSES["ACInputkWhAcc"],
+        TYPE: "uint",
+        CONVERSION: "ac_wh",
+    },
+    "ACExportWhTotalAcc": {
+        DESCRIPTION: "Export energy accumulated total",
+        ADDRESS: SPPRO_ADDRESSES["ACExportkWhTotalAcc_LoWord"],
+        TYPE: "uint",
+        CONVERSION: "ac_wh",
+    },
+    "ACExportWhTodayAcc": {
+        DESCRIPTION: "Export energy accumulated today",
+        ADDRESS: SPPRO_ADDRESSES["AcExportAccumulatedToday"],
+        TYPE: "ushort",
+        CONVERSION: "ac_wh",
+    },
     "ACLoadWhAcc": {
         DESCRIPTION: "Load energy accumulated today",
         ADDRESS: SPPRO_ADDRESSES["ACLoadkWhAcc"],

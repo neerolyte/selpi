@@ -51,19 +51,21 @@ class Statistics():
 
     def get_select_emulated(self):
         vars = {
-            "battery_in_wh_today": variable.create("DCkWhInToday"),
-            "battery_in_wh_total": variable.create('BattInkWhTotalAcc'),
-            "battery_out_wh_today": variable.create("DCkWhOutToday"),
-            "battery_out_wh_total": variable.create('BattOutkWhTotalAcc'),
-            "battery_soc": variable.create('BattSocPercent'),
-            "shunt_w_negated": variable.create('Shunt1Power'),
-            "battery_w": variable.create('DCBatteryPower'),
-            "load_w": variable.create('LoadAcPower'),
-            "grid_w": variable.create('ACGeneratorPower'),
+            "DCkWhInToday": variable.create("DCkWhInToday"),
+            "BattInkWhTotalAcc": variable.create('BattInkWhTotalAcc'),
+            "DCkWhOutToday": variable.create("DCkWhOutToday"),
+            "BattOutkWhTotalAcc": variable.create('BattOutkWhTotalAcc'),
+            "BattSocPercent": variable.create('BattSocPercent'),
+            "Shunt1Power": variable.create('Shunt1Power'),
+            "DCBatteryPower": variable.create('DCBatteryPower'),
+            "LoadAcPower": variable.create('LoadAcPower'),
             "solarinverter_w": variable.create('CombinedKacoAcPowerHiRes'),
-            "load_wh_total": variable.create("ACLoadkWhTotalAcc"),
-            "grid_in_wh_total": variable.create("ACInputWhTotalAcc"),
-            "load_wh_today": variable.create("ACLoadWhAcc"),
+            "ACLoadkWhTotalAcc": variable.create("ACLoadkWhTotalAcc"),
+            "ACInputWhTodayAcc": variable.create("ACInputWhTodayAcc"),
+            "ACInputWhTotalAcc": variable.create("ACInputWhTotalAcc"),
+            "ACExportWhTodayAcc": variable.create("ACExportWhTodayAcc"),
+            "ACExportWhTotalAcc": variable.create("ACExportWhTotalAcc"),
+            "ACLoadWhAcc": variable.create("ACLoadWhAcc"),
             "ACSolarWhTotalAcc": variable.create("ACSolarWhTotalAcc"),
             "Shunt1WhTotalAcc": variable.create("Shunt1WhTotalAcc"),
             "ACSolarWhTodayAcc": variable.create("ACSolarWhTodayAcc"),
@@ -72,25 +74,24 @@ class Statistics():
         self.__update(list(vars.values()))
         timestamp = int(time.time())
         items = {
-            "comment": "energies are actually in kWh, not Wh",
-            "battery_in_wh_today": vars["battery_in_wh_today"].get_value(self.scales) / 1000,
-            "battery_in_wh_total": vars["battery_in_wh_total"].get_value(self.scales) / 1000,
-            "battery_out_wh_today": vars["battery_out_wh_today"].get_value(self.scales) / 1000,
-            "battery_out_wh_total": vars["battery_out_wh_total"].get_value(self.scales) / 1000,
-            "battery_soc": vars["battery_soc"].get_value(self.scales),
-            "battery_w": vars["battery_w"].get_value(self.scales),
+            "battery_in_wh_today": vars["DCkWhInToday"].get_value(self.scales) / 1000,
+            "battery_in_wh_total": vars["BattInkWhTotalAcc"].get_value(self.scales) / 1000,
+            "battery_out_wh_today": vars["DCkWhOutToday"].get_value(self.scales) / 1000,
+            "battery_out_wh_total": vars["BattOutkWhTotalAcc"].get_value(self.scales) / 1000,
+            "battery_soc": vars["BattSocPercent"].get_value(self.scales),
+            "battery_w": vars["DCBatteryPower"].get_value(self.scales),
             #"fault_code": 0,
             #"fault_ts": 0,
             #"gen_status": 0,
-            #"grid_in_wh_today":0.0,
-            "grid_in_wh_total": vars["grid_in_wh_total"].get_value(self.scales) / 1000,
-            #"grid_out_wh_today":0.0,
-            #"grid_out_wh_total":0.0,
-            #"grid_w": vars["grid_w"].get_value(self.scales),
-            "load_w": vars["load_w"].get_value(self.scales),
-            "load_wh_today": vars["load_wh_today"].get_value(self.scales) / 1000,
-            "load_wh_total": vars["load_wh_total"].get_value(self.scales) / 1000,
-            "shunt_w": 0 - vars["shunt_w_negated"].get_value(self.scales),
+            "grid_in_wh_today": vars["ACInputWhTodayAcc"].get_value(self.scales) / 1000, # unverified guess
+            "grid_in_wh_total": vars["ACInputWhTotalAcc"].get_value(self.scales) / 1000,
+            "grid_out_wh_today": vars["ACExportWhTodayAcc"].get_value(self.scales) / 1000, # unverified guess
+            "grid_out_wh_total": vars["ACExportWhTotalAcc"].get_value(self.scales) / 1000, # unverified guess
+            #"grid_w": 0.0,
+            "load_w": vars["LoadAcPower"].get_value(self.scales),
+            "load_wh_today": vars["ACLoadWhAcc"].get_value(self.scales) / 1000,
+            "load_wh_total": vars["ACLoadkWhTotalAcc"].get_value(self.scales) / 1000,
+            "shunt_w": 0 - vars["Shunt1Power"].get_value(self.scales),
             # TODO: assumes shunt 1 is always a solar shunt
             "solar_wh_today": ( vars["ACSolarWhTodayAcc"].get_value(self.scales) + 0 - vars["Shunt1WhTodayAcc"].get_value(self.scales)) / 1000,
             "solar_wh_total": (vars["ACSolarWhTotalAcc"].get_value(self.scales) + (0 -vars["Shunt1WhTotalAcc"].get_value(self.scales))) / 1000,
@@ -103,6 +104,7 @@ class Statistics():
             },
             "item_count": len(items),
             "items": items,
+            "comment": "energies are actually in kWh, not Wh",
             "now": timestamp
         }
 
