@@ -64,6 +64,10 @@ class Statistics():
             "load_wh_total": variable.create("ACLoadkWhTotalAcc"),
             "grid_in_wh_total": variable.create("ACInputWhTotalAcc"),
             "load_wh_today": variable.create("ACLoadWhAcc"),
+            "ACSolarWhTotalAcc": variable.create("ACSolarWhTotalAcc"),
+            "Shunt1WhTotalAcc": variable.create("Shunt1WhTotalAcc"),
+            "ACSolarWhTodayAcc": variable.create("ACSolarWhTodayAcc"),
+            "Shunt1WhTodayAcc": variable.create("Shunt1WhTodayAcc"),
         }
         self.__update(list(vars.values()))
         timestamp = int(time.time())
@@ -87,8 +91,9 @@ class Statistics():
             "load_wh_today": vars["load_wh_today"].get_value(self.scales) / 1000,
             "load_wh_total": vars["load_wh_total"].get_value(self.scales) / 1000,
             "shunt_w": 0 - vars["shunt_w_negated"].get_value(self.scales),
-            #"solar_wh_today":0,
-            #"solar_wh_total":0,
+            # TODO: assumes shunt 1 is always a solar shunt
+            "solar_wh_today": ( vars["ACSolarWhTodayAcc"].get_value(self.scales) + 0 - vars["Shunt1WhTodayAcc"].get_value(self.scales)) / 1000,
+            "solar_wh_total": (vars["ACSolarWhTotalAcc"].get_value(self.scales) + (0 -vars["Shunt1WhTotalAcc"].get_value(self.scales))) / 1000,
             "solarinverter_w": vars["solarinverter_w"].get_value(self.scales),
             "timestamp": timestamp,
         }

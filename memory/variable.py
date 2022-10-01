@@ -264,6 +264,30 @@ MAP = {
         TYPE: "uint",
         CONVERSION: "ac_wh",
     },
+    "ACSolarWhTotalAcc": {
+        DESCRIPTION: "AC coupled solar energy accumulated total",
+        ADDRESS: SPPRO_ADDRESSES["TotalKacokWhTotalAcc_LoWord"],
+        TYPE: "uint",
+        CONVERSION: "ac_wh",
+    },
+    "Shunt1WhTotalAcc": {
+        DESCRIPTION: "Shunt 1 energy accumulated total",
+        ADDRESS: SPPRO_ADDRESSES["Shunt1kWhTotalAcc_LoWord"],
+        TYPE: "int",
+        CONVERSION: "dc_wh",
+    },
+    "ACSolarWhTodayAcc": {
+        DESCRIPTION: "AC coupled solar energy accumulated today",
+        ADDRESS: SPPRO_ADDRESSES["TotalKacoKWhAcc"],
+        TYPE: "short",
+        CONVERSION: "ac_wh",
+    },
+    "Shunt1WhTodayAcc": {
+        DESCRIPTION: "Shunt 1 energy accumulated today",
+        ADDRESS: SPPRO_ADDRESSES["Shunt1kWhAcc"],
+        TYPE: "short",
+        CONVERSION: "dc_wh",
+    },
     "LoginHash": {
         ADDRESS: 0x1f0000,
         TYPE: ""
