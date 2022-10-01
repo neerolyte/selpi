@@ -2,6 +2,7 @@ from email.headerregistry import Address
 import struct
 from memory import convert
 from memory import Range
+from memory.sppro_addresses import ADDRESSES as SPPRO_ADDRESSES
 
 def create(arg):
     if type(arg) is str:
@@ -250,6 +251,12 @@ MAP = {
         TYPE: "ushort",
         UNITS: "%",
         CONVERSION: "percent",
+    },
+    "ACInputWhTotalAcc": {
+        DESCRIPTION: "Input energy accumulated total",
+        ADDRESS: SPPRO_ADDRESSES["ACInputkWhTotalAcc_LoWord"],
+        TYPE: "uint",
+        CONVERSION: "ac_wh",
     },
     "LoginHash": {
         ADDRESS: 0x1f0000,

@@ -62,6 +62,7 @@ class Statistics():
             "grid_w": variable.create('ACGeneratorPower'),
             "solarinverter_w": variable.create('CombinedKacoAcPowerHiRes'),
             "load_wh_total": variable.create("ACLoadkWhTotalAcc"),
+            "grid_in_wh_total": variable.create("ACInputWhTotalAcc"),
         }
         self.__update(list(vars.values()))
         timestamp = int(time.time())
@@ -76,7 +77,7 @@ class Statistics():
             #"fault_ts": 0,
             #"gen_status": 0,
             #"grid_in_wh_today":0.0,
-            #"grid_in_wh_total":0.0,
+            "grid_in_wh_total": vars["grid_in_wh_total"].get_value(self.scales) / 1000,
             #"grid_out_wh_today":0.0,
             #"grid_out_wh_total":0.0,
             "grid_w": vars["grid_w"].get_value(self.scales),
