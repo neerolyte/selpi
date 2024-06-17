@@ -12,14 +12,18 @@ class Protocol:
         self.__connection = connection or create_connection()
         self.__password = password or os.getenvb(b'SELPI_SPPRO_PASSWORD')
         self.__read_buffer = bytearray()
+        self.__logging_in = False
 
     """
     Request memory from the SP Pro
     """
     def query(self, range: Range) -> Data:
         req = Request.create_query(range.address, range.words - 1)
-        res = self.__send(req)
-        return res.memory()
+        try:
+            return self.__send(req).memory()
+        except BufferError as e:
+            self.login()
+        return self.__send(req).memory()
 
     """
     Write some data to memory in the SP Pro
@@ -53,6 +57,11 @@ class Protocol:
         return buf
 
     def login(self):
+        if self.__logging_in:
+            raise ValidationException("Attempted to start multiple logins - the password may be incorrect")
+        self.__logging_in = True
+        self.__read_buffer = bytearray()
+
         # Get data from SP Pro to combine with password and hash
         data = bytearray(self.query(Range(0x1f0000, 8)))
 
@@ -77,6 +86,8 @@ class Protocol:
 
         # respond with hash/pwd MD5
         self.write(0x1f0000, ba)
+
+        self.__logging_in = False
 
         login_status = struct.unpack('<H', self.query(Range(0x1f0010, 1)))[0]
         if login_status != 1:

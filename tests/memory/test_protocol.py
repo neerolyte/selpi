@@ -25,11 +25,25 @@ class ProtocolTest(TestCase):
         connection.write.assert_called_once_with(sent)
 
     def test_query_short_response(self):
+        password = b"Selectronic SP PRO"
+        login_hash_read = b"Q\x07\x00\x00\x1f\x00\xcfbz\xb2\x9f\xdeh\x1a\xe0\xb1\'\'\x08\x8f\x80\xc4\xba\x8b\xa0@"
+        login_challenge = b'W\x07\x00\x00\x1f\x005z\xb6\xd16\x04\x08\x0c\x87\xce\x81\xc1\x82\xc6o\xa5\xfb5w\xaa'
+        login_status_read = b'Q\x00\x10\x00\x1f\x00\xb2\x91\x01\x00\xd8\x19'
         connection = create_autospec(Connection)
         connection.read.side_effect = [
-            b'123456', b'', b'', b'', b'', b'', b'', b'', b'', b'', b'',
+            # short read
+            b'123456',
+            # nothing to read 3 times
+            b'', b'', b'',
+            # login starts
+            login_hash_read,
+            login_challenge,
+            login_status_read,
+            # tries to read again
+            b'123456',
+            b'', b'', b'',
         ]
-        protocol = Protocol(connection)
+        protocol = Protocol(connection, password)
         with self.assertRaises(BufferError) as context:
             protocol.query(Range(0xa000, 9))
         self.assertEqual(
